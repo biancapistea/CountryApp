@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">GeoQuiz</string>
+    <string name="weather_app">Weather App</string>
+    <string name="country_app">Country App</string>
+    <string name="drawer_home">Home</string>
+    <string name="drawer_home_description">Welcome to Weather App! Here you can select a city from the list and see the forecast</string>
+    <string name="drawer_dashboard">Dashboard</string>
+    <string name="world_s_countries_challenge">World\'s Countries Challenge</string>
+    <string name="empty"></string>
+    <string name="dashboard_header_subline">Select the quiz type and answer the quiz questions to test your knowledge about the world\'s countries.</string>
+    <string name="oh_no_text">Oh no...</string>
+    <string name="restart_quiz">Restart quiz</string>
+    <string name="go_to_dashboard">Go to dashboard</string>
+</resources>
