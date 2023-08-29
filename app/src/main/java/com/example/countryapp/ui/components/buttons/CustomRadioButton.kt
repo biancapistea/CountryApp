@@ -37,6 +37,7 @@ fun CustomRadioGroup(
     isCorrectAnswer: Boolean?,
     selectedValue: String,
     isImage: Boolean,
+    defaultAnswerImage: Int,
     setSelected: (String) -> Unit = {},
 ) {
     items.forEach { item ->
@@ -87,7 +88,25 @@ fun CustomRadioGroup(
                     )
                 )
             }
-            if (!isImage) {
+            if (isImage) {
+                if (item == "Does not have") {
+                    Image(
+                        modifier = Modifier
+                            .width(90.dp)
+                            .height(60.dp),
+                        painter = painterResource(id = defaultAnswerImage),
+                        contentDescription = null
+                    )
+                } else {
+                    AsyncImage(
+                        modifier = Modifier
+                            .width(90.dp)
+                            .height(60.dp),
+                        model = item,
+                        contentDescription = null
+                    )
+                }
+            } else {
                 ParagraphTextComponent(
                     text = item,
                     paddingValues = PaddingValues(
@@ -99,8 +118,6 @@ fun CustomRadioGroup(
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.titleLarge.copy(lineHeight = 22.sp)
                 )
-            } else {
-                AsyncImage(modifier = Modifier.width(90.dp).height(60.dp), model = item, contentDescription = null)
             }
         }
     }

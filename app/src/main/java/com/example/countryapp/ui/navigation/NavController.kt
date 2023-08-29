@@ -11,7 +11,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +20,7 @@ import com.example.countryapp.ui.dashboard.DashboardScreen
 import com.example.countryapp.ui.drawer.AppDrawerContent
 import com.example.countryapp.ui.drawer.DrawerParams
 import com.example.countryapp.ui.home.HomeScreen
-import com.example.countryapp.ui.models.Quiz
+import com.example.countryapp.ui.learn.LearnScreen
 import com.example.countryapp.ui.quiz.IncorrectQuizResultDialog
 import com.example.countryapp.ui.quiz.QuizScreen
 import com.example.countryapp.ui.quiz.QuizViewModel
@@ -44,20 +43,10 @@ fun NavController(
                 AppDrawerContent(
                     drawerState = drawerState,
                     menuItems = DrawerParams.drawerButtons,
-                    defaultPick = Destinations.Dashboard
+                    defaultPick = Destinations.Home
                 ) { onUserPickedOption ->
                     // when user picks the path - navigates to new one
                     navController.navigate(onUserPickedOption.name)
-                    when (onUserPickedOption) {
-                        Destinations.Dashboard -> {
-                            navController.navigate(onUserPickedOption.name) {
-                            }
-                        }
-
-                        else -> {
-                            navController.navigate(onUserPickedOption.name)
-                        }
-                    }
                 }
             }
         ) {
@@ -71,7 +60,15 @@ fun NavController(
                 composable(Destinations.Home.name) {
                     HomeScreen(
                         viewModel = hiltViewModel(),
-                        drawerState = drawerState
+                        drawerState = drawerState,
+                        onNavigateToDashboard = { navController.navigate(Destinations.Dashboard.name) },
+                        onNavigateToLearnCountries = { navController.navigate(Destinations.LearnCountries.name) }
+                    )
+                }
+                composable(Destinations.LearnCountries.name) {
+                    LearnScreen(
+                        viewModel = hiltViewModel(),
+                        onCountryClick = { navController.navigate(Destinations.CountryDetails.name) }
                     )
                 }
                 composable(Destinations.Dashboard.name) {
@@ -105,7 +102,8 @@ fun NavController(
                     )
                 }
                 dialog(Destinations.IncorrectQuizResultDialog.name) { backStackEntry ->
-                    val quizViewModel: QuizViewModel = hiltViewModel(navController.previousBackStackEntry!!)
+                    val quizViewModel: QuizViewModel =
+                        hiltViewModel(navController.previousBackStackEntry!!)
 
                     IncorrectQuizResultDialog(
                         onGoToDashboardPressed = { navController.navigate(Destinations.Dashboard.name) },

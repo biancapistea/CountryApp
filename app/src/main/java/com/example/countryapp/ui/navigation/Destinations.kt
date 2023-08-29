@@ -6,5 +6,7 @@ enum class Destinations {
     Splash,
     Quiz,
     SuccessResultQuizDialog,
-    IncorrectQuizResultDialog
+    IncorrectQuizResultDialog,
+    LearnCountries,
+    CountryDetails
 }

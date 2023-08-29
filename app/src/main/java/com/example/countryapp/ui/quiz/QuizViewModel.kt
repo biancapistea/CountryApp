@@ -31,12 +31,53 @@ class QuizViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             loadAllCountriesUseCase.loadAllCountries().collectLatest { countries ->
-                Log.d("fsfsdfsdf", countries.toString())
+                Log.d("countries returned by server", countries.toString())
                 _uiState.update {
                     it.copy(
-                        questions = getQuizByType(type, countries)
+                        questions = getQuizByType(type, countries),
+                        quizQuestion = getQuestionByType(type),
+                        quizHeaderImage = getHeaderImageByType(type),
+                        shouldShowImageAnswers = type == DashboardQuizType.FLAGS.name || type == DashboardQuizType.COAT_OF_ARMS.name,
+                        defaultAnswerImage = getDefaultHeaderImage(type)
                     )
                 }
+            }
+        }
+    }
+
+    private fun getDefaultHeaderImage(type: String): Int {
+        return when (type) {
+            DashboardQuizType.FLAGS.name -> R.drawable.ic_no_flag
+            DashboardQuizType.COAT_OF_ARMS.name -> R.drawable.ic_no_coat_of_arms
+            else -> 0
+        }
+    }
+
+    private fun getHeaderImageByType(type: String): Int {
+        return when (type) {
+            DashboardQuizType.FLAGS.name -> R.drawable.image_country_flags_header
+            DashboardQuizType.CAPITALS.name -> R.drawable.ic_capitals_world
+            DashboardQuizType.COAT_OF_ARMS.name -> R.drawable.ic_coat_of_arms
+            else -> 0
+        }
+    }
+
+    private fun getQuestionByType(type: String): String {
+        return when (type) {
+            DashboardQuizType.FLAGS.name -> {
+                "What is the flag for"
+            }
+
+            DashboardQuizType.CAPITALS.name -> {
+                "What is the capital of"
+            }
+
+            DashboardQuizType.COAT_OF_ARMS.name -> {
+                "What is the coat of arms of"
+            }
+
+            else -> {
+                ""
             }
         }
     }
@@ -44,18 +85,47 @@ class QuizViewModel @Inject constructor(
     private fun getQuizByType(type: String, countries: List<Country>): List<Quiz> {
         Log.d("Type is hello", type.toString())
         Log.d("Type is hello", DashboardQuizType.FLAGS.name)
-        when (type) {
+        return when (type) {
             DashboardQuizType.FLAGS.name -> {
-                return getQuizQuestionsByFlags(countries, 10)
+                getQuizQuestionsByFlags(countries, 10)
             }
 
             DashboardQuizType.CAPITALS.name -> {
-                return getQuizQuestionsByCapital(countries, 8)
+                getQuizQuestionsByCapital(countries, 8)
+            }
+
+            DashboardQuizType.COAT_OF_ARMS.name -> {
+                getQuizQuestionsByCoatOfArms(countries, 10)
             }
 
             else -> listOf<Quiz>()
         }
-        return listOf()
+    }
+
+    private fun getQuizQuestionsByCoatOfArms(
+        countries: List<Country>,
+        noOfQuestions: Int
+    ): List<Quiz> {
+        val quizList = mutableListOf<Quiz>()
+
+        for (i in 1..noOfQuestions) {
+            val randomCountryIndex = Random.nextInt(0, countries.size - 1)
+            val quiz = Quiz(
+                countryName = countries[randomCountryIndex].name.common,
+                correctAnswer = countries[randomCountryIndex].coatOfArms?.png ?: "Does not have" ,
+                answers = listOf(
+                    countries[randomCountryIndex].coatOfArms?.png ?: "",
+                    countries[Random.nextInt(0, countries.size - 1)].coatOfArms?.png
+                        ?: "Does not have",
+                    countries[Random.nextInt(0, countries.size - 1)].coatOfArms?.png
+                        ?: "Does not have",
+                    countries[Random.nextInt(0, countries.size - 1)].coatOfArms?.png
+                        ?: "Does not have",
+                ).shuffled().distinct()
+            )
+            quizList.add(quiz)
+        }
+        return quizList
     }
 
     private fun getQuizQuestionsByCapital(
@@ -68,13 +138,17 @@ class QuizViewModel @Inject constructor(
             val randomCountryIndex = Random.nextInt(0, countries.size - 1)
             val quiz = Quiz(
                 countryName = countries[randomCountryIndex].name.common,
-                correctAnswer = countries[randomCountryIndex].capital?.firstOrNull() ?: "Does not have",
+                correctAnswer = countries[randomCountryIndex].capital?.firstOrNull()
+                    ?: "Does not have",
                 answers = listOf(
-                    countries[randomCountryIndex].capital?.firstOrNull() ?: "",
-                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull() ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull() ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull() ?: "Does not have"
-                ).shuffled()
+                    countries[randomCountryIndex].capital?.firstOrNull() ?: "Does not have",
+                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull()
+                        ?: "Does not have",
+                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull()
+                        ?: "Does not have",
+                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull()
+                        ?: "Does not have"
+                ).shuffled().distinct()
             )
             quizList.add(quiz)
         }
@@ -96,7 +170,7 @@ class QuizViewModel @Inject constructor(
                     countries[Random.nextInt(0, countries.size - 1)].flags?.png ?: "Does not have",
                     countries[Random.nextInt(0, countries.size - 1)].flags?.png ?: "Does not have",
                     countries[Random.nextInt(0, countries.size - 1)].flags?.png ?: "Does not have",
-                ).shuffled()
+                ).shuffled().distinct()
             )
             quizList.add(quiz)
         }
@@ -183,9 +257,13 @@ class QuizViewModel @Inject constructor(
     data class UiState(
         val isQuizFinalized: Boolean = false,
         val questions: List<Quiz> = listOf(),
+        val quizQuestion: String = "",
+        val quizHeaderImage: Int = 0,
         val selectedValue: String = "",
         val numberCorrectQuestions: Int = 0,
         val isCorrect: Boolean? = null,
-        val restartQuiz: Boolean = false
+        val restartQuiz: Boolean = false,
+        val shouldShowImageAnswers: Boolean = false,
+        val defaultAnswerImage: Int = 0
     )
 }

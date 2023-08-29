@@ -5,7 +5,8 @@ data class Country(
     val flags: ImageData? = null,
     val coatOfArms: ImageData? = null,
     val capital: List<String>? = listOf(),
-    val region: String? = ""
+    val region: String? = "",
+    val population: String? = ""
 )
 
 data class Name(

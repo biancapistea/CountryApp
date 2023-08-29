@@ -14,7 +14,9 @@ data class CountryDto(
     @Json(name = "capital")
     val capital: List<String>? = listOf(),
     @Json(name = "region")
-    val region: String? = ""
+    val region: String? = "",
+    @Json(name = "population")
+    val population: String? = ""
 
 )
 

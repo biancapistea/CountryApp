@@ -11,9 +11,10 @@ object CountryNameDtoToModelMapper {
                     official = countryNameDto.name.official
                 ),
                 flags = ImageData(png = countryNameDto.flags?.png, svg = countryNameDto.flags?.svg),
-                coatOfArms = ImageData(png = countryNameDto.flags?.png, svg = countryNameDto.flags?.svg),
+                coatOfArms = ImageData(png = countryNameDto.coatOfArms?.png, svg = countryNameDto.coatOfArms?.svg),
                 capital = countryNameDto.capital,
-                region = countryNameDto.region
+                region = countryNameDto.region,
+                population = countryNameDto.population
             )
         }
     }

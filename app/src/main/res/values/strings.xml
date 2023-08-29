@@ -11,4 +11,6 @@
     <string name="oh_no_text">Oh no...</string>
     <string name="restart_quiz">Restart quiz</string>
     <string name="go_to_dashboard">Go to dashboard</string>
+    <string name="exit_quiz">Exit quiz</string>
+    <string name="learn_and_train">Learn and train</string>
 </resources>

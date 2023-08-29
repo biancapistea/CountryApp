@@ -23,7 +23,7 @@ class DashboardViewModel @Inject constructor() :
 
     data class DashboardUiType(
         val type: DashboardQuizType = DashboardQuizType.EMPTY,
-        val teaserImage: Int = R.string.empty,
+        val teaserImage: Int = 0,
         val title: String = ""
     )
 
@@ -52,6 +52,11 @@ class DashboardViewModel @Inject constructor() :
                             type = DashboardQuizType.GENERAL_ASPECTS,
                             teaserImage = R.drawable.img_general_aspects_quiz,
                             title = "General aspects"
+                        ),
+                        DashboardUiType(
+                            type = DashboardQuizType.COAT_OF_ARMS,
+                            teaserImage = R.drawable.ic_coat_of_arms,
+                            title = "Coat of Arms"
                         )
                     )
                 )

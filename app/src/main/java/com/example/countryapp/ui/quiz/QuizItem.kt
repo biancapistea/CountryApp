@@ -27,6 +27,7 @@ import com.example.countryapp.ui.models.Quiz
 fun QuizItem(
     index: Int,
     quiz: Quiz,
+    defaultAnswerImage: Int,
     question: String = "",
     quizSize: Int,
     isImage: Boolean,
@@ -69,11 +70,12 @@ fun QuizItem(
                 fontSize = 18.sp
             )
             CustomRadioGroup(
-                quiz.answers,
-                isCorrectAnswer,
-                selectedValue,
+                items = quiz.answers,
+                isCorrectAnswer = isCorrectAnswer,
+                selectedValue = selectedValue,
                 isImage = isImage,
-                setSelectedListener
+                defaultAnswerImage = defaultAnswerImage,
+                setSelected = setSelectedListener
             )
         }
         BlueButtonComponent(

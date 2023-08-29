@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -156,11 +157,7 @@ fun Quiz(
                                         }
                                     },
                                 contentScale = ContentScale.Crop,
-                                painter = if (type == DashboardQuizType.FLAGS.name) {
-                                    painterResource(id = R.drawable.image_country_flags_header)
-                                } else {
-                                    painterResource(id = R.drawable.ic_capitals_world)
-                                },
+                                painter = painterResource(id = uiState.quizHeaderImage),
                                 contentDescription = null,
                             )
                         }
@@ -170,17 +167,14 @@ fun Quiz(
                                 .padding(start = 32.dp, end = 32.dp, top = 136.dp),
                         ) {
                             QuizItem(
-                                question = if (type == DashboardQuizType.FLAGS.name) {
-                                    "What is the flag for"
-                                } else {
-                                    "What is the capital of"
-                                },
-                                isImage = type == DashboardQuizType.FLAGS.name,
+                                question = uiState.quizQuestion,
+                                isImage = uiState.shouldShowImageAnswers,
                                 index = pageNumber,
                                 quiz = uiState.questions[pageNumber],
                                 quizSize = uiState.questions.size,
                                 selectedValue = uiState.selectedValue,
                                 isCorrectAnswer = uiState.isCorrect,
+                                defaultAnswerImage = uiState.defaultAnswerImage,
                                 onClick = {
                                     onAnswerCheckListener(pageNumber, onExitQuizPressed)
                                     {
@@ -203,7 +197,7 @@ fun Quiz(
                                         indication = null,
                                         interactionSource = remember { MutableInteractionSource() }
                                     ) { onExitQuizPressed() },
-                                text = "Exit quiz",
+                                text = stringResource(R.string.exit_quiz),
                                 color = Color.Blue,
                                 paddingValues = PaddingValues(top = 40.dp, bottom = 24.dp)
                             )

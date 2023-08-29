@@ -51,6 +51,12 @@ object DrawerParams {
             R.string.drawer_dashboard,
             R.drawable.ic_home,
             R.string.drawer_home_description
+        ),
+        AppDrawerItemInfo(
+            Destinations.LearnCountries,
+            R.string.learn_and_train,
+            R.drawable.ic_home,
+            R.string.drawer_home_description
         )
     )
 }
