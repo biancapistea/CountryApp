@@ -38,10 +38,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.example.countryapp.R
-import com.example.domain.model.Country
+import com.example.countryapp.ui.models.Country
 
 @Composable
-fun LearnScreen(viewModel: LearnViewModel, onCountryClick: (Int) -> Unit) {
+fun LearnScreen(viewModel: LearnViewModel, onCountryClick: (Country) -> Unit) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
         initialValue = LearnViewModel.UiState()
@@ -55,7 +55,7 @@ fun LearnScreen(viewModel: LearnViewModel, onCountryClick: (Int) -> Unit) {
 }
 
 @Composable
-private fun LearnCountriesList(uiState: LearnViewModel.UiState, onBadgeClick: (Int) -> Unit) {
+private fun LearnCountriesList(uiState: LearnViewModel.UiState, onCountryClick: (Country) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,8 +91,8 @@ private fun LearnCountriesList(uiState: LearnViewModel.UiState, onBadgeClick: (I
                 ),
                 data = uiState.countries,
                 columnCount = 3,
-                onBadgeClick = { position ->
-                        onBadgeClick(position)
+                onCountryClick = { position ->
+                    onCountryClick(uiState.countries[position])
                 },
             ) { itemData ->
                 CountryItem(itemData)
@@ -109,7 +109,7 @@ fun CountryItem(country: Country) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             if(country.flags?.png?.isNotEmpty() == true) {
                 AsyncImage(
-                    model = country.flags?.png ?: "",
+                    model = country.flags.png ?: "",
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
@@ -146,7 +146,7 @@ fun <T> LazyListScope.gridItems(
     columnCount: Int,
     modifier: Modifier,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-    onBadgeClick: (Int) -> Unit,
+    onCountryClick: (Int) -> Unit,
     itemContent: @Composable BoxScope.(T) -> Unit,
 ) {
     val size = data.count()
@@ -163,7 +163,7 @@ fun <T> LazyListScope.gridItems(
                             .weight(1F, fill = true)
                             .clickable(indication = null,
                                 interactionSource = remember { MutableInteractionSource() }) {
-                                onBadgeClick(itemIndex)
+                                onCountryClick(itemIndex)
                             },
                         propagateMinConstraints = true
                     ) {

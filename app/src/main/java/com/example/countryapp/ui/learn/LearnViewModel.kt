@@ -3,7 +3,8 @@ package com.example.countryapp.ui.learn
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.model.Country
+import com.example.countryapp.ui.models.Country
+import com.example.countryapp.ui.models.CountryMapper
 import com.example.domain.usecase.LoadAllCountriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,7 @@ class LearnViewModel @Inject constructor(loadAllCountriesUseCase: LoadAllCountri
                 Log.d("countries returned by server", countries.toString())
                 _uiState.update {
                     it.copy(
-                        countries = countries
+                        countries = countries.map { country -> CountryMapper.map(country) }
                     )
                 }
             }
