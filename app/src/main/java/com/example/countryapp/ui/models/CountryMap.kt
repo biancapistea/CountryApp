@@ -20,7 +20,9 @@ object CountryMapper {
                 ),
                 capital = countryDto.capital,
                 region = countryDto.region,
-                population = countryDto.population
+                population = countryDto.population,
+                subregion = countryDto.subregion,
+                independent = countryDto.independent ?: false
             )
         }
     }

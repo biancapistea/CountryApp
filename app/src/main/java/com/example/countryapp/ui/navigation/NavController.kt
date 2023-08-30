@@ -1,7 +1,6 @@
 package com.example.countryapp.ui.navigation
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -10,15 +9,12 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.countryapp.ui.dashboard.DashboardScreen
 import com.example.countryapp.ui.drawer.AppDrawerContent
 import com.example.countryapp.ui.drawer.DrawerParams
@@ -32,16 +28,11 @@ import com.example.countryapp.ui.quiz.QuizScreen
 import com.example.countryapp.ui.quiz.QuizViewModel
 import com.example.countryapp.ui.quiz.SuccessResultQuizDialog
 import com.example.countryapp.ui.splash.SplashScreen
-import com.example.countryapp.ui.utils.fromJson
-import com.example.countryapp.ui.utils.toJson
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavController(
-    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     startDestination: String = Destinations.Splash.name
@@ -88,8 +79,12 @@ fun NavController(
                     )
                 }
                 composable(Destinations.CountryDetails.name) {
-                        val countryClicked = navController.previousBackStackEntry?.savedStateHandle?.get<Country>("countryClicked")
-                        CountryDetailsScreen(country = countryClicked ?: Country(Name("","")))
+                    val countryClicked =
+                        navController.previousBackStackEntry?.savedStateHandle?.get<Country>("countryClicked")
+                    CountryDetailsScreen(
+                        country = countryClicked ?: Country(Name("", "")),
+                        onBackPressed = { navController.popBackStack(route = Destinations.LearnCountries.name, inclusive = false) }
+                    )
                 }
                 composable(Destinations.Dashboard.name) {
                     DashboardScreen(
@@ -100,11 +95,9 @@ fun NavController(
                     )
                 }
                 composable("${Destinations.Quiz.name}/{type}") { backStackEntry ->
-                    val type = backStackEntry.arguments?.getString("type")
                     val quizViewModel: QuizViewModel = hiltViewModel(backStackEntry)
                     QuizScreen(
                         viewModel = quizViewModel,
-                        type = type ?: "",
                         onExitQuizPressed = { navController.navigate(Destinations.Dashboard.name) },
                         onNavigateToSuccessResultQuizDialog = {
                             navController.navigate(Destinations.SuccessResultQuizDialog.name)
@@ -121,13 +114,14 @@ fun NavController(
                         onGoToDashboardPressed = { navController.navigate(Destinations.Dashboard.name) }
                     )
                 }
-                dialog(Destinations.IncorrectQuizResultDialog.name) { backStackEntry ->
+                dialog(Destinations.IncorrectQuizResultDialog.name) {
                     val quizViewModel: QuizViewModel =
                         hiltViewModel(navController.previousBackStackEntry!!)
 
                     IncorrectQuizResultDialog(
                         onGoToDashboardPressed = { navController.navigate(Destinations.Dashboard.name) },
-                        quizViewModel = quizViewModel
+                        quizViewModel = quizViewModel,
+                        onDismissDialog = { navController.popBackStack() }
                     )
                 }
             }

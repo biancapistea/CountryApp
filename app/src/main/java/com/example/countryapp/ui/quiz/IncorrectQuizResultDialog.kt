@@ -47,7 +47,8 @@ import com.example.countryapp.ui.components.text.TitleText
 @Composable
 fun IncorrectQuizResultDialog(
     onGoToDashboardPressed: () -> Unit = {},
-    quizViewModel: QuizViewModel
+    quizViewModel: QuizViewModel,
+    onDismissDialog: () -> Unit = {}
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -105,7 +106,10 @@ fun IncorrectQuizResultDialog(
                         end = 24.dp
                     ),
                     text = stringResource(R.string.restart_quiz),
-                    onClick = { quizViewModel.restartQuizPressed() }
+                    onClick = {
+                        quizViewModel.restartQuizPressed()
+                        onDismissDialog()
+                    }
                 )
                 Row(
                     modifier = Modifier

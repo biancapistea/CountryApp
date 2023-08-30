@@ -65,7 +65,7 @@ class QuizViewModel @Inject constructor(
     private fun getQuestionByType(type: String): String {
         return when (type) {
             DashboardQuizType.FLAGS.name -> {
-                "What is the flag for"
+                "What is the flag for" //TODO: improve here to delete this mocked string
             }
 
             DashboardQuizType.CAPITALS.name -> {
@@ -83,7 +83,7 @@ class QuizViewModel @Inject constructor(
     }
 
     private fun getQuizByType(type: String, countries: List<Country>): List<Quiz> {
-        Log.d("Type is hello", type.toString())
+        Log.d("Type is hello", type)
         Log.d("Type is hello", DashboardQuizType.FLAGS.name)
         return when (type) {
             DashboardQuizType.FLAGS.name -> {
@@ -98,7 +98,7 @@ class QuizViewModel @Inject constructor(
                 getQuizQuestionsByCoatOfArms(countries, 10)
             }
 
-            else -> listOf<Quiz>()
+            else -> listOf()
         }
     }
 
@@ -183,17 +183,6 @@ class QuizViewModel @Inject constructor(
 
     fun setSelectedValue(value: String) {
         _uiState.update { it.copy(selectedValue = value) }
-    }
-
-    fun clearQuiz() {
-        _uiState.update {
-            it.copy(
-                numberCorrectQuestions = 0,
-                selectedValue = "",
-                isCorrect = null,
-                isQuizFinalized = false
-            )
-        }
     }
 
     fun clearQuestion() {

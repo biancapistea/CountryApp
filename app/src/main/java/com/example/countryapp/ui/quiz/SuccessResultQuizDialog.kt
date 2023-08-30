@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -67,7 +68,7 @@ fun SuccessResultQuizDialog(
                     }
                 }
                 TitleText(
-                    text = "Congratulations!",
+                    text = stringResource(R.string.congratulations),
                     modifier = Modifier.padding(
                         bottom = 24.dp,
                         top = 8.dp
@@ -79,7 +80,7 @@ fun SuccessResultQuizDialog(
                         start = 24.dp,
                         end = 24.dp
                     ),
-                    text = "You answered all quiz questions correctly! Keep up and complete all quizzes."
+                    text = stringResource(R.string.quiz_congratulations_message)
                 )
                 Row(
                     modifier = Modifier
@@ -97,7 +98,7 @@ fun SuccessResultQuizDialog(
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
                             ) { onGoToDashboardPressed() },
-                        text = "Go to dashboard",
+                        text = stringResource(id = R.string.go_to_dashboard),
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.graphik_regular)),
                         color = Color.Red

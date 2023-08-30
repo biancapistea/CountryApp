@@ -10,7 +10,9 @@ data class Country(
     val coatOfArms: ImageData? = null,
     val capital: List<String>? = listOf(),
     val region: String? = "",
-    val population: String? = ""
+    val population: String? = "",
+    val subregion: String? = "",
+    val independent: Boolean = false
 ) : Parcelable
 
 @Parcelize

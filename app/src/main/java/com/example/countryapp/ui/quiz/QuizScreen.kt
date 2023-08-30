@@ -45,14 +45,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.text.ParagraphTextComponent
-import com.example.countryapp.ui.dashboard.DashboardQuizType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun QuizScreen(
     viewModel: QuizViewModel,
-    type: String,
     onExitQuizPressed: () -> Unit = {},
     onNavigateToSuccessResultQuizDialog: () -> Unit = {},
     onNavigateToIncorrectQuizResultDialog: () -> Unit = {}
@@ -76,12 +74,11 @@ fun QuizScreen(
             onSelectedValue = viewModel::setSelectedValue,
             onAnswerCheckListener = viewModel::checkAnswer,
             onNextButtonClicked = viewModel::clearQuestion,
-            onExitQuizPressed = onExitQuizPressed,
-            type = type
+            onExitQuizPressed = onExitQuizPressed
         )
     }
 
-    if (uiState.isQuizFinalized && uiState.numberCorrectQuestions == uiState.questions.size) {
+    if (uiState.isQuizFinalized && uiState.numberCorrectQuestions >= uiState.questions.size / 2) {
         LaunchedEffect(Unit) {
             onNavigateToSuccessResultQuizDialog()
         }
@@ -99,8 +96,7 @@ fun Quiz(
     onSelectedValue: (String) -> Unit,
     onAnswerCheckListener: (Int, () -> Unit, () -> Unit) -> Unit,
     onNextButtonClicked: () -> Unit,
-    onExitQuizPressed: () -> Unit,
-    type: String,
+    onExitQuizPressed: () -> Unit
 ) {
     Log.d("De cate ori intra", "hello")
     Scaffold { paddingValues ->

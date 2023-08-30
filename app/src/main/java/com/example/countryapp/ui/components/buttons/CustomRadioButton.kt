@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -101,7 +102,11 @@ fun CustomRadioGroup(
                     AsyncImage(
                         modifier = Modifier
                             .width(90.dp)
-                            .height(60.dp),
+                            .height(60.dp).border(
+                                width = 1.dp,
+                                color = Color.Black,
+                                shape = RectangleShape
+                            ),
                         model = item,
                         contentDescription = null
                     )
