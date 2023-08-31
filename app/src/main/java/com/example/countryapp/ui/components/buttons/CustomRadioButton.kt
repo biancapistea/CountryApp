@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,10 +21,10 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +38,7 @@ import com.example.countryapp.ui.components.text.ParagraphTextComponent
 fun CustomRadioGroup(
     items: List<String>,
     isCorrectAnswer: Boolean?,
+    correctAnswer: String,
     selectedValue: String,
     isImage: Boolean,
     defaultAnswerImage: Int,
@@ -52,7 +54,8 @@ fun CustomRadioGroup(
                     color = colorResource(
                         id = getBorderColor(
                             selectedValue == item,
-                            isCorrectAnswer
+                            isCorrectAnswer,
+                            correctAnswer == item
                         )
                     ),
                     shape = CircleShape
@@ -61,7 +64,8 @@ fun CustomRadioGroup(
                     color = colorResource(
                         id = getBackgroundColor(
                             selectedValue == item,
-                            isCorrectAnswer
+                            isCorrectAnswer,
+                            correctAnswer == item
                         )
                     ), shape = CircleShape
                 )
@@ -70,12 +74,13 @@ fun CustomRadioGroup(
                 ) { setSelected(item) },
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (selectedValue == item && isCorrectAnswer != null) {
+            val isValueSelected = selectedValue == item || correctAnswer == item
+            if (isValueSelected && isCorrectAnswer != null) {
                 Image(
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(start = 18.dp, bottom = 12.dp, end = 12.dp, top = 12.dp),
-                    painter = painterResource(id = getIcon(isCorrectAnswer)),
+                    painter = painterResource(id = getIcon(isCorrectAnswer, correctAnswer == item)),
                     contentDescription = null
                 )
             } else {
@@ -95,7 +100,8 @@ fun CustomRadioGroup(
                     Image(
                         modifier = Modifier
                             .width(90.dp)
-                            .height(60.dp),
+                            .height(60.dp)
+                            .aspectRatio(5f / 3f),
                         painter = painterResource(id = defaultAnswerImage),
                         contentDescription = null
                     )
@@ -103,8 +109,8 @@ fun CustomRadioGroup(
                     AsyncImage(
                         modifier = Modifier
                             .width(90.dp)
-                            .wrapContentHeight()
-                            .border(1.dp, Color.Gray),
+                            .height(66.dp)
+                            .aspectRatio(5f / 3f),
                         model = item,
                         contentDescription = null
                     )
@@ -126,7 +132,8 @@ fun CustomRadioGroup(
     }
 }
 
-private fun getBorderColor(isSelected: Boolean, isCorrectAnswer: Boolean?): Int {
+private fun getBorderColor(isSelected: Boolean, isCorrectAnswer: Boolean?, shouldShowCorrectAnswer: Boolean): Int {
+    if (isCorrectAnswer == false && shouldShowCorrectAnswer) return R.color.correct_answer_color
     if (isSelected) {
         return when (isCorrectAnswer) {
             false -> R.color.red
@@ -137,18 +144,20 @@ private fun getBorderColor(isSelected: Boolean, isCorrectAnswer: Boolean?): Int 
     return R.color.gray_light
 }
 
-private fun getBackgroundColor(isSelected: Boolean, isCorrectAnswer: Boolean?): Int {
+private fun getBackgroundColor(isSelected: Boolean, isCorrectAnswer: Boolean?, shouldShowCorrectAnswer: Boolean): Int {
+    if (isCorrectAnswer == false && shouldShowCorrectAnswer) return R.color.correct_answer_color
     if (isSelected) {
         return when (isCorrectAnswer) {
             false -> R.color.red
             true -> R.color.correct_answer_color
-            else -> R.color.white
+            else -> R.color.gray_light_background_quiz
         }
     }
-    return R.color.white
+    return R.color.gray_light_background_quiz
 }
 
-private fun getIcon(isCorrectAnswer: Boolean?): Int {
+private fun getIcon(isCorrectAnswer: Boolean?, shouldShowCorrectAnswer: Boolean): Int {
+    if (isCorrectAnswer == false && shouldShowCorrectAnswer) return R.drawable.ic_correct_answer
     return when (isCorrectAnswer) {
         true -> R.drawable.ic_correct_answer
         else -> R.drawable.ic_wrong_answer

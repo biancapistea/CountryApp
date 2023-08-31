@@ -71,6 +71,7 @@ fun QuizItem(
             )
             CustomRadioGroup(
                 items = quiz.answers,
+                correctAnswer = quiz.correctAnswer,
                 isCorrectAnswer = isCorrectAnswer,
                 selectedValue = selectedValue,
                 isImage = isImage,
