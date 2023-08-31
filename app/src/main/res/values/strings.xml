@@ -15,4 +15,5 @@
     <string name="learn_and_train">Learn and train</string>
     <string name="quiz_congratulations_message">You answered all quiz questions correctly! Keep up and complete all quizzes.</string>
     <string name="congratulations">Congratulations!</string>
+    <string name="learn_and_train_message">Select a country and find more details about it!</string>
 </resources>

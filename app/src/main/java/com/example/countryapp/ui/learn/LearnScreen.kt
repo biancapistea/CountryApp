@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -72,7 +73,7 @@ private fun LearnCountriesList(uiState: LearnViewModel.UiState, onCountryClick: 
         ) {
             item {
                 Text(
-                    text = "Select a country and find more details about it!",
+                    text = stringResource(R.string.learn_and_train_message),
                     color = Color.Black,
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.graphik_regular)),
@@ -113,7 +114,7 @@ fun CountryItem(country: Country) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             if(country.flags?.png?.isNotEmpty() == true) {
                 AsyncImage(
-                    model = country.flags.png ?: "",
+                    model = country.flags.png,
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier

@@ -67,7 +67,7 @@ fun CountryDetails(
                         .zIndex(2f)
                         .align(Alignment.TopStart)
                         .padding(top = 24.dp, start = 24.dp)
-                        .clickable { },
+                        .clickable { onBackPressed() },
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_back),
