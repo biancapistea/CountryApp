@@ -33,6 +33,22 @@ class LearnViewModel @Inject constructor(loadAllCountriesUseCase: LoadAllCountri
             }
         }
     }
+    
+    fun formatCapitals(capitals: List<String>): String = 
+        if (capitals.size == 1) {
+            capitals.first()
+        } else {
+            capitals.joinToString("\n")
+        }
+
+    fun formatCapitalText(capitalsSize: Int): String {
+        var capital = "Capital: "
+        if (capitalsSize == 1) return capital
+        for (index in 0 until capitalsSize) {
+            capital += "\n"
+        }
+        return capital
+    }
 
     data class UiState(
         val countries: List<Country> = listOf()

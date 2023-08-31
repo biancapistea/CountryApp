@@ -20,6 +20,7 @@ import com.example.countryapp.ui.drawer.AppDrawerContent
 import com.example.countryapp.ui.drawer.DrawerParams
 import com.example.countryapp.ui.home.HomeScreen
 import com.example.countryapp.ui.learn.LearnScreen
+import com.example.countryapp.ui.learn.LearnViewModel
 import com.example.countryapp.ui.learn.countrydetails.CountryDetailsScreen
 import com.example.countryapp.ui.models.Country
 import com.example.countryapp.ui.models.Name
@@ -78,10 +79,13 @@ fun NavController(
                         }
                     )
                 }
-                composable(Destinations.CountryDetails.name) {
+                composable(Destinations.CountryDetails.name) { backStackEntry ->
                     val countryClicked =
                         navController.previousBackStackEntry?.savedStateHandle?.get<Country>("countryClicked")
+
+                    val viewModel: LearnViewModel = hiltViewModel(backStackEntry)
                     CountryDetailsScreen(
+                        viewModel = viewModel,
                         country = countryClicked ?: Country(Name("", "")),
                         onBackPressed = { navController.popBackStack(route = Destinations.LearnCountries.name, inclusive = false) }
                     )

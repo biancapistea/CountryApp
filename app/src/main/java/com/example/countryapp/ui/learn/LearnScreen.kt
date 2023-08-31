@@ -1,6 +1,8 @@
 package com.example.countryapp.ui.learn
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -9,11 +11,13 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -114,7 +118,8 @@ fun CountryItem(country: Country) {
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .width(88.dp)
-                        .height(100.dp)
+                        .wrapContentHeight()
+                        .border(1.dp, Color.Gray)
                 )
             } else {
                 Image(
@@ -124,6 +129,7 @@ fun CountryItem(country: Country) {
                     modifier = Modifier
                         .width(88.dp)
                         .height(100.dp)
+                        .border(1.dp, Color.Black)
                 )
             }
             Text(

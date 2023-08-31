@@ -40,21 +40,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.countryapp.R
-import com.example.countryapp.ui.components.table.TableScreen
 import com.example.countryapp.ui.components.text.ParagraphTextComponent
 import com.example.countryapp.ui.components.text.TitleText
+import com.example.countryapp.ui.learn.LearnViewModel
 import com.example.countryapp.ui.models.Country
 
 @Composable
-fun CountryDetailsScreen(country: Country, onBackPressed: () -> Unit) {
-    CountryDetails(country, onBackPressed)
+fun CountryDetailsScreen(viewModel: LearnViewModel,country: Country, onBackPressed: () -> Unit) {
+    CountryDetails(country, onBackPressed, viewModel::formatCapitals, viewModel::formatCapitalText)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountryDetails(
     country: Country,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    formatCapitals: (List<String>) -> String,
+    formatCapitalText: (Int) -> String,
 ) {
     Scaffold(
         content = { paddingValues ->
@@ -180,7 +182,7 @@ fun CountryDetails(
                                     Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)) {
                                         ParagraphTextComponent(
                                             paddingValues = PaddingValues(bottom = 8.dp),
-                                            text = "Capital: ",
+                                            text = country.capital?.let { formatCapitalText(it.size) } ?: "Capital: ",
                                             textAlign = TextAlign.Start,
                                             color = Color.White
                                         )
@@ -213,7 +215,7 @@ fun CountryDetails(
                                     Column (modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)){
                                         ParagraphTextComponent(
                                             paddingValues = PaddingValues(bottom = 8.dp),
-                                            text = country.capital?.toString() ?: "Does not have",
+                                            text = country.capital?.let { formatCapitals(it) } ?: "Does not have",
                                             textAlign = TextAlign.Start,
                                             color = Color.White
                                         )
