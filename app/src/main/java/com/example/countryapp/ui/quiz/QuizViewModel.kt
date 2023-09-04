@@ -27,6 +27,7 @@ class QuizViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
     private val type: String = checkNotNull(savedStateHandle["type"])
+    private val quizGeneralAspectsType: String = getRandomGeneralAspectsQuestions()
 
     init {
         viewModelScope.launch {
@@ -34,8 +35,8 @@ class QuizViewModel @Inject constructor(
                 Log.d("countries returned by server", countries.toString())
                 _uiState.update {
                     it.copy(
-                        questions = getQuizByType(type, countries),
                         quizQuestion = getQuestionByType(type),
+                        questions = getQuizAnswersByType(type, countries),
                         quizHeaderImage = getHeaderImageByType(type),
                         shouldShowImageAnswers = type == DashboardQuizType.FLAGS.name || type == DashboardQuizType.COAT_OF_ARMS.name,
                         defaultAnswerImage = getDefaultHeaderImage(type)
@@ -58,6 +59,7 @@ class QuizViewModel @Inject constructor(
             DashboardQuizType.FLAGS.name -> R.drawable.image_country_flags_header
             DashboardQuizType.CAPITALS.name -> R.drawable.ic_capitals_world
             DashboardQuizType.COAT_OF_ARMS.name -> R.drawable.ic_coat_of_arms
+            DashboardQuizType.GENERAL_ASPECTS.name -> R.drawable.img_general_aspects_quiz
             else -> 0
         }
     }
@@ -76,13 +78,23 @@ class QuizViewModel @Inject constructor(
                 "What is the coat of arms of"
             }
 
+            DashboardQuizType.GENERAL_ASPECTS.name -> {
+                GeneralAspectsQuizQuestions.generalQuizQuestions[quizGeneralAspectsType] ?: ""
+            }
+
             else -> {
                 ""
             }
         }
     }
 
-    private fun getQuizByType(type: String, countries: List<Country>): List<Quiz> {
+    private fun getRandomGeneralAspectsQuestions(): String {
+        val randomQuestionIndex =
+            Random.nextInt(0, GeneralAspectsQuizQuestions.generalQuizTypes.size - 1)
+        return GeneralAspectsQuizQuestions.generalQuizTypes[randomQuestionIndex]
+    }
+
+    private fun getQuizAnswersByType(type: String, countries: List<Country>): List<Quiz> {
         Log.d("Type is hello", type)
         Log.d("Type is hello", DashboardQuizType.FLAGS.name)
         return when (type) {
@@ -98,9 +110,96 @@ class QuizViewModel @Inject constructor(
                 getQuizQuestionsByCoatOfArms(countries, 10)
             }
 
+            DashboardQuizType.GENERAL_ASPECTS.name -> {
+                getQuizQuestionsByGeneralAspects(countries, 10)
+            }
+
             else -> listOf()
         }
     }
+
+    private fun getQuizQuestionsByGeneralAspects(
+        countries: List<Country>,
+        noOfQuestions: Int
+    ): List<Quiz> {
+        val quizList = mutableListOf<Quiz>()
+        for (i in 1..noOfQuestions) {
+            val randomCountryIndex = Random.nextInt(0, countries.size - 1)
+            when (quizGeneralAspectsType) {
+                "region" -> {
+                    val quiz = Quiz(
+                        countryName = countries[randomCountryIndex].name.common,
+                        correctAnswer = countries[randomCountryIndex].region ?: "Does not have",
+                        answers = listOf(
+                            countries[randomCountryIndex].region ?: "",
+                            countries[Random.nextInt(0, countries.size - 1)].region
+                                ?: "Does not have",
+                            countries[Random.nextInt(0, countries.size - 1)].region
+                                ?: "Does not have",
+                            countries[Random.nextInt(0, countries.size - 1)].region
+                                ?: "Does not have",
+                        ).shuffled().distinct()
+                    )
+                    quizList.add(quiz)
+                }
+                "subregion" -> {
+                        val quiz = Quiz(
+                            countryName = countries[randomCountryIndex].name.common,
+                            correctAnswer = countries[randomCountryIndex].subregion ?: "Does not have",
+                            answers = listOf(
+                                countries[randomCountryIndex].subregion ?: "",
+                                countries[Random.nextInt(0, countries.size - 1)].subregion
+                                    ?: "Does not have",
+                                countries[Random.nextInt(0, countries.size - 1)].subregion
+                                    ?: "Does not have",
+                                countries[Random.nextInt(0, countries.size - 1)].subregion
+                                    ?: "Does not have",
+                            ).shuffled().distinct()
+                        )
+                        quizList.add(quiz)
+                }
+
+                "population" -> {
+                    val quiz = Quiz(
+                        countryName = countries[randomCountryIndex].name.common,
+                        correctAnswer = countries[randomCountryIndex].population ?: "Does not have",
+                        answers = listOf(
+                            countries[randomCountryIndex].population ?: "",
+                            countries[Random.nextInt(0, countries.size - 1)].population
+                                ?: "Does not have",
+                            countries[Random.nextInt(0, countries.size - 1)].population
+                                ?: "Does not have",
+                            countries[Random.nextInt(0, countries.size - 1)].population
+                                ?: "Does not have",
+                        ).shuffled().distinct()
+                    )
+                    quizList.add(quiz)
+                }
+
+                "independent" -> {
+                    val quiz = Quiz(
+                        countryName = countries[randomCountryIndex].name.common,
+                        correctAnswer = countries[randomCountryIndex].population ?: "Does not have",
+                        answers = listOf(
+                            countries[randomCountryIndex].population ?: "",
+                            countries[Random.nextInt(0, countries.size - 1)].population
+                                ?: "Does not have",
+                            countries[Random.nextInt(0, countries.size - 1)].population
+                                ?: "Does not have",
+                            countries[Random.nextInt(0, countries.size - 1)].population
+                                ?: "Does not have",
+                        ).shuffled().distinct()
+                    )
+                    quizList.add(quiz)
+                }
+
+
+                else -> {}
+            }
+        }
+        return quizList
+    }
+
 
     private fun getQuizQuestionsByCoatOfArms(
         countries: List<Country>,
@@ -112,7 +211,7 @@ class QuizViewModel @Inject constructor(
             val randomCountryIndex = Random.nextInt(0, countries.size - 1)
             val quiz = Quiz(
                 countryName = countries[randomCountryIndex].name.common,
-                correctAnswer = countries[randomCountryIndex].coatOfArms?.png ?: "Does not have" ,
+                correctAnswer = countries[randomCountryIndex].coatOfArms?.png ?: "Does not have",
                 answers = listOf(
                     countries[randomCountryIndex].coatOfArms?.png ?: "",
                     countries[Random.nextInt(0, countries.size - 1)].coatOfArms?.png
