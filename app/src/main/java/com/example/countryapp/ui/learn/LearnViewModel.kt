@@ -44,7 +44,7 @@ class LearnViewModel @Inject constructor(loadAllCountriesUseCase: LoadAllCountri
     fun formatCapitalText(capitalsSize: Int): String {
         var capital = "Capital: "
         if (capitalsSize == 1) return capital
-        for (index in 0 until capitalsSize) {
+        for (index in 1 until capitalsSize) {
             capital += "\n"
         }
         return capital

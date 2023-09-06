@@ -1,6 +1,7 @@
 package com.example.countryapp.ui.drawer
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -74,9 +75,9 @@ fun <T : Enum<T>> AppDrawerContent(
     var currentPick by remember { mutableStateOf(defaultPick) }
     val coroutineScope = rememberCoroutineScope()
 
-    ModalDrawerSheet {
-        Surface(color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.width(200.dp)
+    ModalDrawerSheet(modifier = Modifier.background(Color.White)) {
+        Surface(
+            modifier = Modifier.width(200.dp),
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally

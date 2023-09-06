@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,7 +45,7 @@ import com.example.countryapp.ui.learn.LearnViewModel
 import com.example.countryapp.ui.models.Country
 
 @Composable
-fun CountryDetailsScreen(viewModel: LearnViewModel,country: Country, onBackPressed: () -> Unit) {
+fun CountryDetailsScreen(viewModel: LearnViewModel, country: Country, onBackPressed: () -> Unit) {
     CountryDetails(country, onBackPressed, viewModel::formatCapitals, viewModel::formatCapitalText)
 }
 
@@ -60,7 +59,7 @@ fun CountryDetails(
 ) {
     Scaffold(
         content = { paddingValues ->
-            Box {
+            Box(modifier = Modifier.background(Color.White)) {
                 Column(
                     modifier = Modifier
                         .wrapContentSize()
@@ -70,7 +69,7 @@ fun CountryDetails(
                         .clickable { onBackPressed() },
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_back),
+                        painter = painterResource(id = R.drawable.ic_back_button_black),
                         modifier = Modifier
                             .height(48.dp),
                         contentDescription = null
@@ -162,27 +161,34 @@ fun CountryDetails(
                                     .align(Alignment.CenterHorizontally)
                             ) {
                                 TitleText(
-                                    modifier = Modifier.padding(bottom = 32.dp).fillMaxWidth(),
+                                    modifier = Modifier
+                                        .padding(bottom = 32.dp)
+                                        .fillMaxWidth(),
                                     text = "General Aspects",
                                     color = Color.White
                                 )
-                                Row(
+                                Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(IntrinsicSize.Min)
                                         .padding(
                                             top = 24.dp,
                                             bottom = 40.dp,
-                                            start = 16.dp,
-                                            end = 24.dp
+                                            end = 24.dp,
+                                            start = 24.dp
                                         )
                                         .align(Alignment.CenterHorizontally)
                                         .horizontalScroll(rememberScrollState())
                                 ) {
-                                    Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)) {
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(start = 32.dp, top = 6.dp, bottom = 6.dp)
+                                            .align(Alignment.CenterStart)
+                                    ) {
                                         ParagraphTextComponent(
                                             paddingValues = PaddingValues(bottom = 8.dp),
-                                            text = country.capital?.let { formatCapitalText(it.size) } ?: "Capital: ",
+                                            text = country.capital?.let { formatCapitalText(it.size) }
+                                                ?: "Capital: ",
                                             textAlign = TextAlign.Start,
                                             color = Color.White
                                         )
@@ -211,11 +217,16 @@ fun CountryDetails(
                                             color = Color.White
                                         )
                                     }
-                                    VerticalDivider()
-                                    Column (modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)){
+                                    VerticalDivider(modifier = Modifier.align(Alignment.Center))
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(end = 32.dp, top = 6.dp, bottom = 6.dp)
+                                            .align(Alignment.CenterEnd)
+                                    ) {
                                         ParagraphTextComponent(
                                             paddingValues = PaddingValues(bottom = 8.dp),
-                                            text = country.capital?.let { formatCapitals(it) } ?: "Does not have",
+                                            text = country.capital?.let { formatCapitals(it) }
+                                                ?: "Does not have",
                                             textAlign = TextAlign.Start,
                                             color = Color.White
                                         )
@@ -257,7 +268,8 @@ fun CountryDetails(
 @Composable
 fun VerticalDivider(
     color: Color = Color.White,
-    thickness: Dp = 1.dp
+    thickness: Dp = 1.dp,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = Modifier
@@ -265,5 +277,6 @@ fun VerticalDivider(
             .width(thickness)
             .padding(vertical = 4.dp)
             .background(color = color)
+            .then(modifier)
     )
 }

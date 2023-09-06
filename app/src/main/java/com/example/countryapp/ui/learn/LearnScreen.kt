@@ -21,12 +21,15 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,15 +64,19 @@ fun LearnScreen(viewModel: LearnViewModel, onCountryClick: (Country) -> Unit) {
 
 @Composable
 private fun LearnCountriesList(uiState: LearnViewModel.UiState, onCountryClick: (Country) -> Unit) {
+    val listState by remember { mutableStateOf(LazyListState()) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize()
+            .background(Color.White)
     ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 40.dp, start = 16.dp, end = 16.dp, top = 16.dp)
+                .padding(bottom = 40.dp, start = 16.dp, end = 16.dp, top = 16.dp),
+            state = listState
         ) {
             item {
                 Text(

@@ -2,8 +2,6 @@ package com.example.countryapp.ui.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -13,17 +11,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
-import com.example.countryapp.R
 import com.example.countryapp.ui.dashboard.DashboardScreen
 import com.example.countryapp.ui.drawer.AppDrawerContent
 import com.example.countryapp.ui.drawer.DrawerParams
@@ -38,7 +32,6 @@ import com.example.countryapp.ui.quiz.QuizScreen
 import com.example.countryapp.ui.quiz.QuizViewModel
 import com.example.countryapp.ui.quiz.SuccessResultQuizDialog
 import com.example.countryapp.ui.splash.SplashScreen
-import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
