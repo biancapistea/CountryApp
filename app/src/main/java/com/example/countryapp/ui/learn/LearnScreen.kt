@@ -22,13 +22,18 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,14 +47,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.example.countryapp.R
 import com.example.countryapp.ui.models.Country
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LearnScreen(viewModel: LearnViewModel, onCountryClick: (Country) -> Unit) {
+fun LearnScreen(
+    viewModel: LearnViewModel,
+    onCountryClick: (Country) -> Unit,
+    drawerState: DrawerState
+) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
         initialValue = LearnViewModel.UiState()
@@ -59,11 +71,16 @@ fun LearnScreen(viewModel: LearnViewModel, onCountryClick: (Country) -> Unit) {
         }
     }
 
-    LearnCountriesList(uiState, onCountryClick)
+    LearnCountriesList(uiState, onCountryClick, drawerState)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LearnCountriesList(uiState: LearnViewModel.UiState, onCountryClick: (Country) -> Unit) {
+private fun LearnCountriesList(
+    uiState: LearnViewModel.UiState,
+    onCountryClick: (Country) -> Unit,
+    drawerState: DrawerState
+) {
     val listState by remember { mutableStateOf(LazyListState()) }
 
     Column(
@@ -72,6 +89,7 @@ private fun LearnCountriesList(uiState: LearnViewModel.UiState, onCountryClick: 
             .wrapContentSize()
             .background(Color.White)
     ) {
+        val coroutineScope = rememberCoroutineScope()
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -79,6 +97,21 @@ private fun LearnCountriesList(uiState: LearnViewModel.UiState, onCountryClick: 
             state = listState
         ) {
             item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Image(painter = painterResource(R.drawable.ic_menu),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .zIndex(2f)
+                            .clickable {
+                                coroutineScope.launch {
+                                    drawerState.open()
+                                }
+                            })
+                }
                 Text(
                     text = stringResource(R.string.learn_and_train_message),
                     color = Color.Black,
@@ -119,7 +152,7 @@ fun CountryItem(country: Country) {
         modifier = Modifier.wrapContentSize()
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            if(country.flags?.png?.isNotEmpty() == true) {
+            if (country.flags?.png?.isNotEmpty() == true) {
                 AsyncImage(
                     model = country.flags.png,
                     contentDescription = null,

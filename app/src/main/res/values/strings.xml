@@ -9,6 +9,7 @@
     <string name="empty"></string>
     <string name="dashboard_header_subline">Select the quiz type and answer the quiz questions to test your knowledge about the world\'s countries.</string>
     <string name="oh_no_text">Oh no...</string>
+    <string name="region_quiz_subline">First of all, please select the continent from which you want to test your knowledge. If you would like questions from all continents, then select "all continents".</string>
     <string name="restart_quiz">Restart quiz</string>
     <string name="go_to_dashboard">Go to dashboard</string>
     <string name="exit_quiz">Exit quiz</string>

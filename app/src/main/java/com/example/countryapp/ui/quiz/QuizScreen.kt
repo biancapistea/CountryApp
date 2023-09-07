@@ -94,11 +94,11 @@ fun QuizScreen(
 fun Quiz(
     uiState: QuizViewModel.UiState,
     onSelectedValue: (String) -> Unit,
-    onAnswerCheckListener: (Int, () -> Unit, () -> Unit) -> Unit,
+    onAnswerCheckListener: (Int, () -> Unit) -> Unit,
     onNextButtonClicked: () -> Unit,
     onExitQuizPressed: () -> Unit
 ) {
-    Log.d("De cate ori intra", "hello")
+    Log.d("De cate ori intra", "hello") //TODO: needs refactor!!, intra de prea multe ori aici
     Scaffold { paddingValues ->
         val scrollState = rememberScrollState()
         Column(
@@ -172,7 +172,7 @@ fun Quiz(
                                 isCorrectAnswer = uiState.isCorrect,
                                 defaultAnswerImage = uiState.defaultAnswerImage,
                                 onClick = {
-                                    onAnswerCheckListener(pageNumber, onExitQuizPressed)
+                                    onAnswerCheckListener(pageNumber)
                                     {
                                         scope.launch {
                                             delay(800L)

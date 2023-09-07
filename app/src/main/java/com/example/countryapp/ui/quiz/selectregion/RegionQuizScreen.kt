@@ -1,4 +1,4 @@
-package com.example.countryapp.ui.dashboard
+package com.example.countryapp.ui.quiz.selectregion
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,16 +20,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,42 +34,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
-import com.example.countryapp.ui.components.text.TitleText
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(
-    viewModel: DashboardViewModel,
-    onDashboardTypePressed: (DashboardQuizType) -> Unit = {}, drawerState: DrawerState
+fun RegionQuizScreen(
+    viewModel: RegionQuizViewModel,
+    onRegionTypePressed: (RegionQuizType) -> Unit,
+    onBackPressed: () -> Unit
 ) {
-
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
-        initialValue = DashboardViewModel.UiState()
+        initialValue = RegionQuizViewModel.UiState()
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
             viewModel.uiState.collect { value = it }
         }
     }
 
-    DashboardContent(uiState, onDashboardTypePressed, drawerState)
+    RegionQuizContent(uiState, onRegionTypePressed, onBackPressed)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DashboardContent(
-    uiState: DashboardViewModel.UiState,
-    onDashboardTypePressed: (DashboardQuizType) -> Unit,
-    drawerState: DrawerState
+private fun RegionQuizContent(
+    uiState: RegionQuizViewModel.UiState,
+    onRegionTypePressed: (RegionQuizType) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     val listState = rememberLazyListState()
     Column(
@@ -84,7 +72,6 @@ private fun DashboardContent(
             .wrapContentSize()
             .background(Color.White)
     ) {
-        val coroutineScope = rememberCoroutineScope()
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -92,38 +79,11 @@ private fun DashboardContent(
             state = listState
         ) {
             item {
-                Box(
-                    modifier = Modifier.wrapContentSize()
-                ) {
-                    Image(painter = painterResource(R.drawable.ic_menu),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(top = 24.dp, start = 12.dp)
-                            .zIndex(2f)
-                            .clickable {
-                                coroutineScope.launch {
-                                    drawerState.open()
-                                }
-                            })
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White)
-                            .height(260.dp),
-                        contentScale = ContentScale.Crop,
-                        painter = painterResource(id = R.drawable.img_dashboard_quiz),
-                        contentDescription = null
-                    )
-                }
-            }
-
-            item {
-                TitleText(
-                    modifier = Modifier.padding(top = 40.dp, start = 40.dp, end = 40.dp),
-                    text = stringResource(id = uiState.headerTitle),
-                    style = MaterialTheme.typography.titleLarge.copy(lineHeight = 34.sp),
-                    color = Color.Red,
-                    fontWeight = FontWeight.Normal
+                Image(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    modifier = Modifier
+                        .padding(top = 24.dp, start = 24.dp).height(48.dp).clickable { onBackPressed() },
+                    contentDescription = null
                 )
                 Text(
                     text = stringResource(id = uiState.headerSubline),
@@ -134,7 +94,7 @@ private fun DashboardContent(
                     lineHeight = 22.sp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 40.dp, start = 36.dp, end = 36.dp)
+                        .padding(top = 10.dp, start = 36.dp, end = 36.dp)
                         .align(alignment = Alignment.CenterHorizontally)
                 )
             }
@@ -148,26 +108,26 @@ private fun DashboardContent(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(top = 24.dp),
-                data = uiState.listOfDashboardTypes,
+                data = uiState.listOfRegionTypes,
                 columnCount = 2,
                 itemContent = { itemData ->
                     TeaserItem(itemData)
                 }
             ) { position ->
-                onDashboardTypePressed(uiState.listOfDashboardTypes[position].type)
+                onRegionTypePressed(uiState.listOfRegionTypes[position].type)
             }
         }
     }
 }
 
 @Composable
-fun TeaserItem(dashboardUiType: DashboardViewModel.DashboardUiType) {
+fun TeaserItem(regionUiType: RegionQuizViewModel.RegionUiType) {
     Box(
         modifier = Modifier.wrapContentSize()
     ) {
         Column {
             Image(
-                painter = painterResource(id = dashboardUiType.teaserImage),
+                painter = painterResource(id = regionUiType.teaserImage),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -176,7 +136,7 @@ fun TeaserItem(dashboardUiType: DashboardViewModel.DashboardUiType) {
                     .clip(RoundedCornerShape(6.dp)),
             )
             Text(
-                text = dashboardUiType.title,
+                text = regionUiType.title,
                 color = Color.Black,
                 fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.graphik_regular)),
@@ -186,55 +146,6 @@ fun TeaserItem(dashboardUiType: DashboardViewModel.DashboardUiType) {
                     .padding(top = 10.dp)
                     .fillMaxWidth()
             )
-        }
-    }
-}
-
-//TODO: improve quiz feature by adding status when user finalizes a quiz on dashboard
-@Composable
-private fun StatusOverlay(status: String) {
-    Box(
-        modifier = Modifier
-            .width(142.dp)
-            .height(142.dp)
-            .clip(
-                shape = RoundedCornerShape(
-                    bottomEnd = 6.dp,
-                    bottomStart = 6.dp
-                )
-            ),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .background(color = Color.Black.copy(alpha = 0.5f))
-        ) {
-            Row(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(start = 8.dp, end = 8.dp)
-                    .align(alignment = Alignment.Center)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_check),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterVertically)
-                )
-                Text(
-                    text = status,
-                    color = Color.White,
-                    fontSize = 12.sp,
-                    style = MaterialTheme.typography.labelSmall.copy(lineHeight = 18.sp),
-                    fontFamily = FontFamily(Font(R.font.graphik_regular)),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(start = 4.dp, top = 8.dp, bottom = 8.dp),
-                )
-            }
         }
     }
 }

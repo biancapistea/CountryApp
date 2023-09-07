@@ -18,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import com.example.countryapp.ui.dashboard.DashboardQuizType
 import com.example.countryapp.ui.dashboard.DashboardScreen
 import com.example.countryapp.ui.drawer.AppDrawerContent
 import com.example.countryapp.ui.drawer.DrawerParams
@@ -31,6 +32,7 @@ import com.example.countryapp.ui.quiz.IncorrectQuizResultDialog
 import com.example.countryapp.ui.quiz.QuizScreen
 import com.example.countryapp.ui.quiz.QuizViewModel
 import com.example.countryapp.ui.quiz.SuccessResultQuizDialog
+import com.example.countryapp.ui.quiz.selectregion.RegionQuizScreen
 import com.example.countryapp.ui.splash.SplashScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -95,7 +97,8 @@ fun NavController(
                                         value = countryClicked
                                     )
                                     navController.navigate(Destinations.CountryDetails.name)
-                                }
+                                },
+                                drawerState = drawerState
                             )
                         }
                         composable(Destinations.CountryDetails.name) { backStackEntry ->
@@ -120,11 +123,26 @@ fun NavController(
                             DashboardScreen(
                                 viewModel = hiltViewModel(),
                                 onDashboardTypePressed = { type ->
-                                    navController.navigate("${Destinations.Quiz.name}/${type.name}")
-                                }
+                                    if (type.name == DashboardQuizType.GENERAL_ASPECTS.name) {
+                                        navController.navigate("${Destinations.Quiz.name}/${type.name}/{}")
+                                    } else {
+                                        navController.navigate("${Destinations.RegionType.name}/${type.name}")
+                                    }
+                                },
+                                drawerState = drawerState
                             )
                         }
-                        composable("${Destinations.Quiz.name}/{type}") { backStackEntry ->
+                        composable("${Destinations.RegionType.name}/{dashboardType}") { backStackEntry ->
+                            val dashboardType = backStackEntry.arguments?.getString("dashboardType")
+                            RegionQuizScreen(
+                                viewModel = hiltViewModel(),
+                                onRegionTypePressed = { selectedRegionType ->
+                                    navController.navigate("${Destinations.Quiz.name}/${dashboardType}/${selectedRegionType.name}")
+                                },
+                                onBackPressed = { navController.popBackStack() }
+                            )
+                        }
+                        composable("${Destinations.Quiz.name}/{dashboardType}/{selectedRegionType}") { backStackEntry ->
                             val quizViewModel: QuizViewModel = hiltViewModel(backStackEntry)
                             QuizScreen(
                                 viewModel = quizViewModel,

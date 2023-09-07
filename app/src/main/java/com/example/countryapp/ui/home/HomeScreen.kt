@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
@@ -71,72 +73,51 @@ fun HomeScreenContent(
     onNavigateToDashboard: () -> Unit,
     onNavigateToLearnCountries: () -> Unit
 ) {
-    Box {
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = painterResource(R.drawable.img_header_dashboard),
-            contentDescription = "background_image",
-            contentScale = ContentScale.FillBounds
-        )
-        Scaffold(
-            containerColor = Color.Transparent,
-            topBar = {
-                val coroutineScope = rememberCoroutineScope()
-                Box(
+    val coroutineScope = rememberCoroutineScope()
+    Scaffold(content = { paddingValues ->
+        Column(
+            Modifier
+                .wrapContentSize()
+                .padding(top = 52.dp)
+        ) {
+            TitleText(text = stringResource(R.string.app_name))
+        }
+        Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth().zIndex(2f)
+            ) {
+                Image(painter = painterResource(R.drawable.ic_menu),
+                    contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                ) {
-                    TopAppBar(
-                        modifier = Modifier.align(Alignment.TopEnd),
-                        title = {},
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                coroutineScope.launch {
-                                    drawerState.open() //TODO: change this to be at top level of the application not only on home screen.
-                                    //TODO: On dashboard also and on other screens as well
-                                }
-                            }) {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_menu),
-                                    contentDescription = null
-                                )
+                        .padding(top = 24.dp, start = 12.dp)
+                        .zIndex(2f)
+                        .clickable {
+                            coroutineScope.launch {
+                                drawerState.open()
                             }
-                        },
-                    )
-                }
-                Column(
-                    Modifier
-                        .wrapContentSize()
-                        .padding(top = 52.dp)
-                ) {
-                    TitleText(text = stringResource(R.string.app_name))
-                }
-            },
-            content = { paddingValues ->
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
-                        .padding(paddingValues)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    BlueButtonComponent(
-                        paddingValues = PaddingValues(
-                            top = 52.dp,
-                            start = 24.dp,
-                            end = 24.dp
-                        ), text = "Test your knowledge", onClick = { onNavigateToDashboard() })
-                    BlueButtonComponent(
-                        paddingValues = PaddingValues(
-                            top = 24.dp,
-                            start = 24.dp,
-                            end = 24.dp
-                        ),
-                        text = "Learn and train",
-                        onClick = { onNavigateToLearnCountries() })
-                }
+                        })
             }
-        )
-    }
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(R.drawable.img_home_background),
+                contentDescription = "background_image",
+                contentScale = ContentScale.FillBounds
+            )
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(top = 40.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                BlueButtonComponent(paddingValues = PaddingValues(
+                    top = 52.dp, start = 24.dp, end = 24.dp
+                ), text = "Test your knowledge", onClick = { onNavigateToDashboard() })
+                BlueButtonComponent(paddingValues = PaddingValues(
+                    top = 24.dp, start = 24.dp, end = 24.dp
+                ), text = "Learn and train", onClick = { onNavigateToLearnCountries() })
+            }
+        }
+    })
 }

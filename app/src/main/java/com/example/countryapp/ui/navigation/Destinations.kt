@@ -8,5 +8,6 @@ enum class Destinations {
     SuccessResultQuizDialog,
     IncorrectQuizResultDialog,
     LearnCountries,
-    CountryDetails
+    CountryDetails,
+    RegionType
 }

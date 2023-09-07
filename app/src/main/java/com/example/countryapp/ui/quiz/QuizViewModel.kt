@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.countryapp.R
 import com.example.countryapp.ui.dashboard.DashboardQuizType
 import com.example.countryapp.ui.models.Quiz
+import com.example.countryapp.ui.quiz.selectregion.RegionQuizType
 import com.example.domain.model.Country
 import com.example.domain.usecase.LoadAllCountriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,8 @@ class QuizViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
-    private val type: String = checkNotNull(savedStateHandle["type"])
+    private val dashboardType: String = checkNotNull(savedStateHandle["dashboardType"])
+    private val selectedRegionType: String = checkNotNull(savedStateHandle["selectedRegionType"])
     private val quizGeneralAspectsType: String = getRandomGeneralAspectsQuestions()
 
     init {
@@ -35,27 +37,31 @@ class QuizViewModel @Inject constructor(
                 Log.d("countries returned by server", countries.toString())
                 _uiState.update {
                     it.copy(
-                        quizQuestion = getQuestionByType(type),
-                        questions = getQuizAnswersByType(type, countries),
-                        quizHeaderImage = getHeaderImageByType(type),
-                        shouldShowImageAnswers = type == DashboardQuizType.FLAGS.name || type == DashboardQuizType.COAT_OF_ARMS.name,
-                        defaultAnswerImage = getDefaultHeaderImage(type)
+                        quizQuestion = getQuestionByType(dashboardType),
+                        questions = getQuizAnswersByType(
+                            dashboardType,
+                            countries,
+                            selectedRegionType
+                        ),
+                        quizHeaderImage = getHeaderImageByType(dashboardType),
+                        shouldShowImageAnswers = dashboardType == DashboardQuizType.FLAGS.name || dashboardType == DashboardQuizType.COAT_OF_ARMS.name,
+                        defaultAnswerImage = getDefaultHeaderImage(dashboardType)
                     )
                 }
             }
         }
     }
 
-    private fun getDefaultHeaderImage(type: String): Int {
-        return when (type) {
+    private fun getDefaultHeaderImage(dashboardType: String): Int {
+        return when (dashboardType) {
             DashboardQuizType.FLAGS.name -> R.drawable.ic_no_flag
             DashboardQuizType.COAT_OF_ARMS.name -> R.drawable.ic_no_coat_of_arms
             else -> 0
         }
     }
 
-    private fun getHeaderImageByType(type: String): Int {
-        return when (type) {
+    private fun getHeaderImageByType(dashboardType: String): Int {
+        return when (dashboardType) {
             DashboardQuizType.FLAGS.name -> R.drawable.image_country_flags_header
             DashboardQuizType.CAPITALS.name -> R.drawable.ic_capitals_world
             DashboardQuizType.COAT_OF_ARMS.name -> R.drawable.ic_coat_of_arms
@@ -64,8 +70,8 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    private fun getQuestionByType(type: String): String {
-        return when (type) {
+    private fun getQuestionByType(dashboardType: String): String {
+        return when (dashboardType) {
             DashboardQuizType.FLAGS.name -> {
                 "What is the flag for" //TODO: improve here to delete this mocked string
             }
@@ -94,20 +100,24 @@ class QuizViewModel @Inject constructor(
         return GeneralAspectsQuizQuestions.generalQuizTypes[randomQuestionIndex]
     }
 
-    private fun getQuizAnswersByType(type: String, countries: List<Country>): List<Quiz> {
-        Log.d("Type is hello", type)
+    private fun getQuizAnswersByType(
+        dashboardType: String,
+        countries: List<Country>,
+        selectedRegionType: String
+    ): List<Quiz> {
+        Log.d("Type is hello", dashboardType)
         Log.d("Type is hello", DashboardQuizType.FLAGS.name)
-        return when (type) {
+        return when (dashboardType) {
             DashboardQuizType.FLAGS.name -> {
-                getQuizQuestionsByFlags(countries, 10)
+                getQuizQuestionsByFlags(countries, 15, selectedRegionType)
             }
 
             DashboardQuizType.CAPITALS.name -> {
-                getQuizQuestionsByCapital(countries, 8)
+                getQuizQuestionsByCapital(countries, 15, selectedRegionType)
             }
 
             DashboardQuizType.COAT_OF_ARMS.name -> {
-                getQuizQuestionsByCoatOfArms(countries, 10)
+                getQuizQuestionsByCoatOfArms(countries, 15, selectedRegionType)
             }
 
             DashboardQuizType.GENERAL_ASPECTS.name -> {
@@ -142,21 +152,22 @@ class QuizViewModel @Inject constructor(
                     )
                     quizList.add(quiz)
                 }
+
                 "subregion" -> {
-                        val quiz = Quiz(
-                            countryName = countries[randomCountryIndex].name.common,
-                            correctAnswer = countries[randomCountryIndex].subregion ?: "Does not have",
-                            answers = listOf(
-                                countries[randomCountryIndex].subregion ?: "",
-                                countries[Random.nextInt(0, countries.size - 1)].subregion
-                                    ?: "Does not have",
-                                countries[Random.nextInt(0, countries.size - 1)].subregion
-                                    ?: "Does not have",
-                                countries[Random.nextInt(0, countries.size - 1)].subregion
-                                    ?: "Does not have",
-                            ).shuffled().distinct()
-                        )
-                        quizList.add(quiz)
+                    val quiz = Quiz(
+                        countryName = countries[randomCountryIndex].name.common,
+                        correctAnswer = countries[randomCountryIndex].subregion ?: "Does not have",
+                        answers = listOf(
+                            countries[randomCountryIndex].subregion ?: "",
+                            countries[Random.nextInt(0, countries.size - 1)].subregion
+                                ?: "Does not have",
+                            countries[Random.nextInt(0, countries.size - 1)].subregion
+                                ?: "Does not have",
+                            countries[Random.nextInt(0, countries.size - 1)].subregion
+                                ?: "Does not have",
+                        ).shuffled().distinct()
+                    )
+                    quizList.add(quiz)
                 }
 
                 "population" -> {
@@ -203,22 +214,24 @@ class QuizViewModel @Inject constructor(
 
     private fun getQuizQuestionsByCoatOfArms(
         countries: List<Country>,
-        noOfQuestions: Int
+        noOfQuestions: Int,
+        selectedRegionType: String
     ): List<Quiz> {
         val quizList = mutableListOf<Quiz>()
+        val countryList = getCountryListFilteredByRegion(countries, selectedRegionType)
 
         for (i in 1..noOfQuestions) {
-            val randomCountryIndex = Random.nextInt(0, countries.size - 1)
+            val randomCountryIndex = Random.nextInt(0, countryList.size - 1)
             val quiz = Quiz(
-                countryName = countries[randomCountryIndex].name.common,
-                correctAnswer = countries[randomCountryIndex].coatOfArms?.png ?: "Does not have",
+                countryName = countryList[randomCountryIndex].name.common,
+                correctAnswer = countryList[randomCountryIndex].coatOfArms?.png ?: "Does not have",
                 answers = listOf(
-                    countries[randomCountryIndex].coatOfArms?.png ?: "",
-                    countries[Random.nextInt(0, countries.size - 1)].coatOfArms?.png
+                    countryList[randomCountryIndex].coatOfArms?.png ?: "",
+                    countryList[Random.nextInt(0, countryList.size - 1)].coatOfArms?.png
                         ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].coatOfArms?.png
+                    countryList[Random.nextInt(0, countryList.size - 1)].coatOfArms?.png
                         ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].coatOfArms?.png
+                    countryList[Random.nextInt(0, countryList.size - 1)].coatOfArms?.png
                         ?: "Does not have",
                 ).shuffled().distinct()
             )
@@ -229,23 +242,25 @@ class QuizViewModel @Inject constructor(
 
     private fun getQuizQuestionsByCapital(
         countries: List<Country>,
-        noOfQuestions: Int
+        noOfQuestions: Int,
+        selectedRegionType: String
     ): List<Quiz> {
         val quizList = mutableListOf<Quiz>()
+        val countryList = getCountryListFilteredByRegion(countries, selectedRegionType)
 
         for (i in 1..noOfQuestions) {
-            val randomCountryIndex = Random.nextInt(0, countries.size - 1)
+            val randomCountryIndex = Random.nextInt(0, countryList.size - 1)
             val quiz = Quiz(
-                countryName = countries[randomCountryIndex].name.common,
-                correctAnswer = countries[randomCountryIndex].capital?.firstOrNull()
+                countryName = countryList[randomCountryIndex].name.common,
+                correctAnswer = countryList[randomCountryIndex].capital?.firstOrNull()
                     ?: "Does not have",
                 answers = listOf(
-                    countries[randomCountryIndex].capital?.firstOrNull() ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull()
+                    countryList[randomCountryIndex].capital?.firstOrNull() ?: "Does not have",
+                    countryList[Random.nextInt(0, countryList.size - 1)].capital?.firstOrNull()
                         ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull()
+                    countryList[Random.nextInt(0, countryList.size - 1)].capital?.firstOrNull()
                         ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].capital?.firstOrNull()
+                    countryList[Random.nextInt(0, countryList.size - 1)].capital?.firstOrNull()
                         ?: "Does not have"
                 ).shuffled().distinct()
             )
@@ -256,24 +271,43 @@ class QuizViewModel @Inject constructor(
     }
 
 
-    private fun getQuizQuestionsByFlags(countries: List<Country>, noOfQuestions: Int): List<Quiz> {
+    private fun getQuizQuestionsByFlags(
+        countries: List<Country>,
+        noOfQuestions: Int,
+        selectedRegionType: String
+    ): List<Quiz> {
         val quizList = mutableListOf<Quiz>()
+        val countryList = getCountryListFilteredByRegion(countries, selectedRegionType)
 
         for (i in 1..noOfQuestions) {
-            val randomCountryIndex = Random.nextInt(0, countries.size - 1)
+            val randomCountryIndex = Random.nextInt(0, countryList.size - 1)
             val quiz = Quiz(
-                countryName = countries[randomCountryIndex].name.common,
-                correctAnswer = countries[randomCountryIndex].flags?.png ?: "Does not have",
+                countryName = countryList[randomCountryIndex].name.common,
+                correctAnswer = countryList[randomCountryIndex].flags?.png ?: "Does not have",
                 answers = listOf(
-                    countries[randomCountryIndex].flags?.png ?: "",
-                    countries[Random.nextInt(0, countries.size - 1)].flags?.png ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].flags?.png ?: "Does not have",
-                    countries[Random.nextInt(0, countries.size - 1)].flags?.png ?: "Does not have",
+                    countryList[randomCountryIndex].flags?.png ?: "",
+                    countryList[Random.nextInt(0, countryList.size - 1)].flags?.png
+                        ?: "Does not have",
+                    countryList[Random.nextInt(0, countryList.size - 1)].flags?.png
+                        ?: "Does not have",
+                    countryList[Random.nextInt(0, countryList.size - 1)].flags?.png
+                        ?: "Does not have",
                 ).shuffled().distinct()
             )
             quizList.add(quiz)
         }
         return quizList
+    }
+
+    private fun getCountryListFilteredByRegion(
+        countries: List<Country>,
+        regionType: String
+    ): List<Country> {
+        return if (regionType == RegionQuizType.ALL.name) {
+            countries
+        } else {
+            countries.filter { elem -> elem.region?.uppercase() == regionType.uppercase() }
+        }
     }
 
     fun updateRestartQuiz() {
@@ -295,7 +329,6 @@ class QuizViewModel @Inject constructor(
 
     fun checkAnswer(
         position: Int,
-        onGoToDashboardPressed: () -> Unit,
         onCorrectAnswerAction: () -> Unit
     ) {
         val selectedValue = _uiState.value.selectedValue
