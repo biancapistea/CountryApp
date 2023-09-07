@@ -56,6 +56,7 @@ fun NavController(
 //                    }
 //                }
 //        )
+                      //TODO: think of a way to have the menu on all screens and not add it manually on which screen I want
     },
         content = { paddingValues ->
             Surface {
@@ -163,9 +164,7 @@ fun NavController(
                             )
                         }
                         dialog(Destinations.IncorrectQuizResultDialog.name) {
-                            val quizViewModel: QuizViewModel =
-                                hiltViewModel(navController.previousBackStackEntry!!)
-
+                            val quizViewModel: QuizViewModel = hiltViewModel(navController.previousBackStackEntry!!)
                             IncorrectQuizResultDialog(
                                 onGoToDashboardPressed = { navController.navigate(Destinations.Dashboard.name) },
                                 quizViewModel = quizViewModel,

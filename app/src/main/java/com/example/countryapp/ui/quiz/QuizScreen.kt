@@ -98,7 +98,7 @@ fun Quiz(
     onNextButtonClicked: () -> Unit,
     onExitQuizPressed: () -> Unit
 ) {
-    Log.d("De cate ori intra", "hello") //TODO: needs refactor!!, intra de prea multe ori aici
+    Log.d("De cate ori intra", "hello") //TODO: needs refactor!!, intra de prea multe ori aici. De fiecare data cand apas pe un raspuns
     Scaffold { paddingValues ->
         val scrollState = rememberScrollState()
         Column(
