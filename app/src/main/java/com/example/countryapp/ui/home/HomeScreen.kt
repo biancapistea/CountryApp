@@ -47,28 +47,17 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
     drawerState: DrawerState,
     onNavigateToDashboard: () -> Unit,
     onNavigateToLearnCountries: () -> Unit
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = HomeViewModel.UiState()
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect { value = it }
-        }
-    }
-
-    HomeScreenContent(uiState, drawerState, onNavigateToDashboard, onNavigateToLearnCountries)
+    HomeScreenContent(drawerState, onNavigateToDashboard, onNavigateToLearnCountries)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
-    uiState: HomeViewModel.UiState,
     drawerState: DrawerState,
     onNavigateToDashboard: () -> Unit,
     onNavigateToLearnCountries: () -> Unit
@@ -80,12 +69,13 @@ fun HomeScreenContent(
                 .wrapContentSize()
                 .padding(top = 52.dp)
         ) {
-            TitleText(text = stringResource(R.string.app_name))
+            TitleText(text = stringResource(R.string.app_name), modifier = Modifier.zIndex(2f))
         }
         Box(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth().zIndex(2f)
+                    .fillMaxWidth()
+                    .zIndex(2f)
             ) {
                 Image(painter = painterResource(R.drawable.ic_menu),
                     contentDescription = null,
@@ -100,23 +90,32 @@ fun HomeScreenContent(
             }
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = painterResource(R.drawable.img_home_background),
+                painter = painterResource(R.drawable.img_geography_background),
                 contentDescription = "background_image",
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
             Column(
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(top = 40.dp)
+                    .padding(top = 120.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 BlueButtonComponent(paddingValues = PaddingValues(
                     top = 52.dp, start = 24.dp, end = 24.dp
-                ), text = "Test your knowledge", onClick = { onNavigateToDashboard() })
+                ),
+                    text = stringResource(R.string.test_your_knowledge),
+                    onClick = { onNavigateToDashboard() })
                 BlueButtonComponent(paddingValues = PaddingValues(
                     top = 24.dp, start = 24.dp, end = 24.dp
-                ), text = "Learn and train", onClick = { onNavigateToLearnCountries() })
+                ),
+                    text = stringResource(id = R.string.learn_and_train),
+                    onClick = { onNavigateToLearnCountries() })
+                BlueButtonComponent(paddingValues = PaddingValues(
+                    top = 24.dp, start = 24.dp, end = 24.dp
+                ),
+                    text = stringResource(R.string.play_a_game_learn),
+                    onClick = { onNavigateToLearnCountries() })
             }
         }
     })

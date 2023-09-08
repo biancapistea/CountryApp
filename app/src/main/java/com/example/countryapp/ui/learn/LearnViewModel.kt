@@ -3,8 +3,10 @@ package com.example.countryapp.ui.learn
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.countryapp.ui.components.section.SectionData
 import com.example.countryapp.ui.models.Country
 import com.example.countryapp.ui.models.CountryMapper
+import com.example.countryapp.ui.quiz.selectregion.RegionQuizType
 import com.example.domain.usecase.LoadAllCountriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,32 +27,26 @@ class LearnViewModel @Inject constructor(loadAllCountriesUseCase: LoadAllCountri
         viewModelScope.launch {
             loadAllCountriesUseCase.loadAllCountries().collectLatest { countries ->
                 Log.d("countries returned by server", countries.toString())
+                val countriesMapped = countries.map { country -> CountryMapper.map(country) }
+
                 _uiState.update {
                     it.copy(
-                        countries = countries.map { country -> CountryMapper.map(country) }
+                        europeCountries = countriesMapped.filter { elem -> elem.region?.uppercase() == RegionQuizType.EUROPE.name },
+                        asiaCountries = countriesMapped.filter { elem -> elem.region?.uppercase() == RegionQuizType.ASIA.name },
+                        africaCountries = countriesMapped.filter { elem -> elem.region?.uppercase() == RegionQuizType.AFRICA.name },
+                        oceaniaCountries = countriesMapped.filter { elem -> elem.region?.uppercase() == RegionQuizType.OCEANIA.name },
+                        americasCountries = countriesMapped.filter { elem -> elem.region?.uppercase() == RegionQuizType.AMERICAS.name },
                     )
                 }
             }
         }
     }
-    
-    fun formatCapitals(capitals: List<String>): String = 
-        if (capitals.size == 1) {
-            capitals.first()
-        } else {
-            capitals.joinToString("\n")
-        }
-
-    fun formatCapitalText(capitalsSize: Int): String {
-        var capital = "Capital: "
-        if (capitalsSize == 1) return capital
-        for (index in 1 until capitalsSize) {
-            capital += "\n"
-        }
-        return capital
-    }
 
     data class UiState(
-        val countries: List<Country> = listOf()
+        val europeCountries: List<Country> = listOf(),
+        val asiaCountries: List<Country> = listOf(),
+        val africaCountries: List<Country> = listOf(),
+        val oceaniaCountries: List<Country> = listOf(),
+        val americasCountries: List<Country> = listOf(),
     )
 }

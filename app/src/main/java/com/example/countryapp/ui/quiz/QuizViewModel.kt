@@ -385,6 +385,6 @@ class QuizViewModel @Inject constructor(
         val isCorrect: Boolean? = null,
         val restartQuiz: Boolean = false,
         val shouldShowImageAnswers: Boolean = false,
-        val defaultAnswerImage: Int = 0
+        val defaultAnswerImage: Int = 0,
     )
 }

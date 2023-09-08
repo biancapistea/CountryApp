@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.countryapp.R
@@ -45,7 +46,11 @@ import com.example.countryapp.ui.learn.LearnViewModel
 import com.example.countryapp.ui.models.Country
 
 @Composable
-fun CountryDetailsScreen(viewModel: LearnViewModel, country: Country, onBackPressed: () -> Unit) {
+fun CountryDetailsScreen(
+    viewModel: CountryDetailsViewModel,
+    country: Country,
+    onBackPressed: () -> Unit
+) {
     CountryDetails(country, onBackPressed, viewModel::formatCapitals, viewModel::formatCapitalText)
 }
 
@@ -172,7 +177,7 @@ fun CountryDetails(
                                         .fillMaxWidth()
                                         .height(IntrinsicSize.Min)
                                         .padding(
-                                            top = 24.dp,
+                                            top = 16.dp,
                                             bottom = 40.dp,
                                             end = 24.dp,
                                             start = 24.dp
@@ -267,9 +272,9 @@ fun CountryDetails(
 
 @Composable
 fun VerticalDivider(
+    modifier: Modifier = Modifier,
     color: Color = Color.White,
     thickness: Dp = 1.dp,
-    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = Modifier

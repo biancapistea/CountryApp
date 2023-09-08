@@ -26,6 +26,7 @@ import com.example.countryapp.ui.home.HomeScreen
 import com.example.countryapp.ui.learn.LearnScreen
 import com.example.countryapp.ui.learn.LearnViewModel
 import com.example.countryapp.ui.learn.countrydetails.CountryDetailsScreen
+import com.example.countryapp.ui.learn.countrydetails.CountryDetailsViewModel
 import com.example.countryapp.ui.models.Country
 import com.example.countryapp.ui.models.Name
 import com.example.countryapp.ui.quiz.IncorrectQuizResultDialog
@@ -83,7 +84,6 @@ fun NavController(
                         }
                         composable(Destinations.Home.name) {
                             HomeScreen(
-                                viewModel = hiltViewModel(),
                                 drawerState = drawerState,
                                 onNavigateToDashboard = { navController.navigate(Destinations.Dashboard.name) },
                                 onNavigateToLearnCountries = { navController.navigate(Destinations.LearnCountries.name) }
@@ -107,10 +107,8 @@ fun NavController(
                                 navController.previousBackStackEntry?.savedStateHandle?.get<Country>(
                                     "countryClicked"
                                 )
-
-                            val viewModel: LearnViewModel = hiltViewModel(backStackEntry)
                             CountryDetailsScreen(
-                                viewModel = viewModel,
+                                viewModel = hiltViewModel(),
                                 country = countryClicked ?: Country(Name("", "")),
                                 onBackPressed = {
                                     navController.popBackStack(

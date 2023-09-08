@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
+import com.example.countryapp.ui.components.customgriditems.gridItems
+import com.example.countryapp.ui.components.items.RegionItem
 
 @Composable
 fun RegionQuizScreen(
@@ -111,90 +113,11 @@ private fun RegionQuizContent(
                 data = uiState.listOfRegionTypes,
                 columnCount = 2,
                 itemContent = { itemData ->
-                    TeaserItem(itemData)
+                    RegionItem(itemData)
                 }
             ) { position ->
                 onRegionTypePressed(uiState.listOfRegionTypes[position].type)
             }
-        }
-    }
-}
-
-@Composable
-fun TeaserItem(regionUiType: RegionQuizViewModel.RegionUiType) {
-    Box(
-        modifier = Modifier.wrapContentSize()
-    ) {
-        Column {
-            Image(
-                painter = painterResource(id = regionUiType.teaserImage),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .width(142.dp)
-                    .height(142.dp)
-                    .clip(RoundedCornerShape(6.dp)),
-            )
-            Text(
-                text = regionUiType.title,
-                color = Color.Black,
-                fontSize = 16.sp,
-                fontFamily = FontFamily(Font(R.font.graphik_regular)),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .width(142.dp)
-                    .padding(top = 10.dp)
-                    .fillMaxWidth()
-            )
-        }
-    }
-}
-
-fun <T> LazyListScope.gridItems(
-    data: List<T>,
-    columnCount: Int,
-    modifier: Modifier,
-    horizontalArrangement: Arrangement.Horizontal,
-    itemContent: @Composable BoxScope.(T) -> Unit,
-    onItemClick: (Int) -> Unit
-) {
-    val size = data.count()
-    val rows = if (size == 0) 0 else 1 + (size - 1) / columnCount
-    items(rows, key = { it.hashCode() }) { rowIndex ->
-        Row(
-            horizontalArrangement = horizontalArrangement,
-            modifier = modifier
-        ) {
-            for (columnIndex in 0 until columnCount) {
-                val itemIndex = rowIndex * columnCount + columnIndex
-                if (itemIndex < size) {
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .clickable { onItemClick(itemIndex) },
-                        propagateMinConstraints = true
-                    ) {
-                        itemContent(data[itemIndex])
-                    }
-                } else {
-                    EmptyGridItem()
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun EmptyGridItem() {
-    Box(
-        modifier = Modifier.wrapContentSize()
-    ) {
-        Column {
-            Spacer(
-                modifier = Modifier
-                    .width(142.dp)
-                    .height(142.dp)
-            )
         }
     }
 }
