@@ -6,8 +6,10 @@
     <string name="drawer_home_description">Welcome to Weather App! Here you can select a city from the list and see the forecast</string>
     <string name="drawer_dashboard">Dashboard</string>
     <string name="world_s_countries_challenge">World\'s Countries Challenge</string>
+    <string name="play_and_learn_challenge">Let\'s play Hangman!</string>
     <string name="empty"></string>
     <string name="dashboard_header_subline">Select the quiz type and answer the quiz questions to test your knowledge about the world\'s countries.</string>
+    <string name="choose_type_hangman">Choose from which category you want to receive words.</string>
     <string name="oh_no_text">Oh no...</string>
     <string name="region_quiz_subline">First of all, please select the continent from which you want to test your knowledge. If you would like questions from all continents, then select "all continents".</string>
     <string name="restart_quiz">Restart quiz</string>
@@ -24,4 +26,9 @@
     <string name="africa">Africa</string>
     <string name="oceania">Oceania</string>
     <string name="americas">Americas</string>
+    <string name="the_word_was_n_s">Your lives are over! The correct answer was:\n%s</string>
+    <string name="show_how_many_hints">Hit streak:\n%d</string>
+    <string name="WIN_COUNT_TEXT">Streak count: %d</string>
+    <string name="TIP_TEXT">"Tip: %s"</string>
+    <string name="skip">Skip</string>
 </resources>

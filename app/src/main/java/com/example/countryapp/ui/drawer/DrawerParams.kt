@@ -34,7 +34,6 @@ data class AppDrawerItemInfo<T>(
     val drawerOption: T,
     @StringRes val title: Int,
     @DrawableRes val drawableId: Int,
-    @StringRes val descriptionId: Int
 )
 
 // list of the buttons
@@ -43,20 +42,22 @@ object DrawerParams {
         AppDrawerItemInfo(
             Destinations.Home,
             R.string.drawer_home,
-            R.drawable.ic_home,
-            R.string.drawer_home_description
+            R.drawable.ic_home
         ),
         AppDrawerItemInfo(
             Destinations.Dashboard,
             R.string.drawer_dashboard,
-            R.drawable.ic_home,
-            R.string.drawer_home_description
+            R.drawable.ic_home
         ),
         AppDrawerItemInfo(
             Destinations.LearnCountries,
             R.string.learn_and_train,
-            R.drawable.ic_home,
-            R.string.drawer_home_description
+            R.drawable.ic_home
+        ),
+        AppDrawerItemInfo(
+            Destinations.GameDashboard,
+            R.string.play_a_game_learn,
+            R.drawable.ic_home
         )
     )
 }

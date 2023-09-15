@@ -22,11 +22,11 @@ import com.example.countryapp.ui.dashboard.DashboardQuizType
 import com.example.countryapp.ui.dashboard.DashboardScreen
 import com.example.countryapp.ui.drawer.AppDrawerContent
 import com.example.countryapp.ui.drawer.DrawerParams
+import com.example.countryapp.ui.game.GameDashboardScreen
+import com.example.countryapp.ui.game.GameScreen
 import com.example.countryapp.ui.home.HomeScreen
 import com.example.countryapp.ui.learn.LearnScreen
-import com.example.countryapp.ui.learn.LearnViewModel
 import com.example.countryapp.ui.learn.countrydetails.CountryDetailsScreen
-import com.example.countryapp.ui.learn.countrydetails.CountryDetailsViewModel
 import com.example.countryapp.ui.models.Country
 import com.example.countryapp.ui.models.Name
 import com.example.countryapp.ui.quiz.IncorrectQuizResultDialog
@@ -57,7 +57,7 @@ fun NavController(
 //                    }
 //                }
 //        )
-                      //TODO: think of a way to have the menu on all screens and not add it manually on which screen I want
+        //TODO: think of a way to have the menu on all screens and not add it manually on which screen I want
     },
         content = { paddingValues ->
             Surface {
@@ -86,7 +86,8 @@ fun NavController(
                             HomeScreen(
                                 drawerState = drawerState,
                                 onNavigateToDashboard = { navController.navigate(Destinations.Dashboard.name) },
-                                onNavigateToLearnCountries = { navController.navigate(Destinations.LearnCountries.name) }
+                                onNavigateToLearnCountries = { navController.navigate(Destinations.LearnCountries.name) },
+                                onNavigateToPlayScreen = { navController.navigate(Destinations.GameDashboard.name) }
                             )
                         }
                         composable(Destinations.LearnCountries.name) {
@@ -131,6 +132,22 @@ fun NavController(
                                 drawerState = drawerState
                             )
                         }
+                        composable("${Destinations.Game.name}/{dashboardType}") {
+                            GameScreen(
+                                gameViewModel = hiltViewModel(),
+                                onNavigateUp = { navController.navigateUp() },
+                                onPopBack = { navController.popBackStack() }
+                            )
+                        }
+                        composable(Destinations.GameDashboard.name) {
+                            GameDashboardScreen(
+                                viewModel = hiltViewModel(),
+                                drawerState = drawerState,
+                                onDashboardTypePressed = { type ->
+                                    navController.navigate("${Destinations.Game.name}/${type.name}")
+                                }
+                            )
+                        }
                         composable("${Destinations.RegionType.name}/{dashboardType}") { backStackEntry ->
                             val dashboardType = backStackEntry.arguments?.getString("dashboardType")
                             RegionQuizScreen(
@@ -162,7 +179,8 @@ fun NavController(
                             )
                         }
                         dialog(Destinations.IncorrectQuizResultDialog.name) {
-                            val quizViewModel: QuizViewModel = hiltViewModel(navController.previousBackStackEntry!!)
+                            val quizViewModel: QuizViewModel =
+                                hiltViewModel(navController.previousBackStackEntry!!)
                             IncorrectQuizResultDialog(
                                 onGoToDashboardPressed = { navController.navigate(Destinations.Dashboard.name) },
                                 quizViewModel = quizViewModel,

@@ -109,26 +109,26 @@ class QuizViewModel @Inject constructor(
         Log.d("Type is hello", DashboardQuizType.FLAGS.name)
         return when (dashboardType) {
             DashboardQuizType.FLAGS.name -> {
-                getQuizQuestionsByFlags(countries, 15, selectedRegionType)
+                getQuizAnswersByFlags(countries, 15, selectedRegionType)
             }
 
             DashboardQuizType.CAPITALS.name -> {
-                getQuizQuestionsByCapital(countries, 15, selectedRegionType)
+                getQuizAnswersByCapital(countries, 15, selectedRegionType)
             }
 
             DashboardQuizType.COAT_OF_ARMS.name -> {
-                getQuizQuestionsByCoatOfArms(countries, 15, selectedRegionType)
+                getQuizAnswersByCoatOfArms(countries, 15, selectedRegionType)
             }
 
             DashboardQuizType.GENERAL_ASPECTS.name -> {
-                getQuizQuestionsByGeneralAspects(countries, 10)
+                getQuizAnswersByGeneralAspects(countries, 10)
             }
 
             else -> listOf()
         }
     }
 
-    private fun getQuizQuestionsByGeneralAspects(
+    private fun getQuizAnswersByGeneralAspects(
         countries: List<Country>,
         noOfQuestions: Int
     ): List<Quiz> {
@@ -212,7 +212,7 @@ class QuizViewModel @Inject constructor(
     }
 
 
-    private fun getQuizQuestionsByCoatOfArms(
+    private fun getQuizAnswersByCoatOfArms(
         countries: List<Country>,
         noOfQuestions: Int,
         selectedRegionType: String
@@ -240,7 +240,7 @@ class QuizViewModel @Inject constructor(
         return quizList
     }
 
-    private fun getQuizQuestionsByCapital(
+    private fun getQuizAnswersByCapital(
         countries: List<Country>,
         noOfQuestions: Int,
         selectedRegionType: String
@@ -271,7 +271,7 @@ class QuizViewModel @Inject constructor(
     }
 
 
-    private fun getQuizQuestionsByFlags(
+    private fun getQuizAnswersByFlags(
         countries: List<Country>,
         noOfQuestions: Int,
         selectedRegionType: String

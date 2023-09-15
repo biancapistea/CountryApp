@@ -9,5 +9,7 @@ enum class Destinations {
     IncorrectQuizResultDialog,
     LearnCountries,
     CountryDetails,
-    RegionType
+    RegionType,
+    Game,
+    GameDashboard
 }

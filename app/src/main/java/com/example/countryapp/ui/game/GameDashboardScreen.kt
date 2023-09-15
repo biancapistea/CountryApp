@@ -1,4 +1,6 @@
-package com.example.countryapp.ui.dashboard
+package com.example.countryapp.ui.game
+
+import com.example.countryapp.ui.dashboard.DashboardQuizType
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,27 +48,27 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(
-    viewModel: DashboardViewModel,
+fun GameDashboardScreen(
+    viewModel: GameDashboardViewModel,
     onDashboardTypePressed: (DashboardQuizType) -> Unit = {}, drawerState: DrawerState
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
-        initialValue = DashboardViewModel.UiState()
+        initialValue = GameDashboardViewModel.UiState()
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
             viewModel.uiState.collect { value = it }
         }
     }
 
-    DashboardContent(uiState, onDashboardTypePressed, drawerState)
+    GameDashboardContent(uiState, onDashboardTypePressed, drawerState)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DashboardContent(
-    uiState: DashboardViewModel.UiState,
+private fun GameDashboardContent(
+    uiState: GameDashboardViewModel.UiState,
     onDashboardTypePressed: (DashboardQuizType) -> Unit,
     drawerState: DrawerState
 ) {
@@ -104,7 +106,7 @@ private fun DashboardContent(
                             .background(Color.White)
                             .height(260.dp),
                         contentScale = ContentScale.Crop,
-                        painter = painterResource(id = R.drawable.img_dashboard_quiz),
+                        painter = painterResource(id = uiState.headerImage),
                         contentDescription = null
                     )
                 }

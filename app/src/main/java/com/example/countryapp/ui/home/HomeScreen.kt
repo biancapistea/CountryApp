@@ -49,9 +49,10 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     drawerState: DrawerState,
     onNavigateToDashboard: () -> Unit,
-    onNavigateToLearnCountries: () -> Unit
+    onNavigateToLearnCountries: () -> Unit,
+    onNavigateToPlayScreen: () -> Unit
 ) {
-    HomeScreenContent(drawerState, onNavigateToDashboard, onNavigateToLearnCountries)
+    HomeScreenContent(drawerState, onNavigateToDashboard, onNavigateToLearnCountries, onNavigateToPlayScreen)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -60,7 +61,8 @@ fun HomeScreen(
 fun HomeScreenContent(
     drawerState: DrawerState,
     onNavigateToDashboard: () -> Unit,
-    onNavigateToLearnCountries: () -> Unit
+    onNavigateToLearnCountries: () -> Unit,
+    onNavigateToPlayScreen: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     Scaffold(content = { paddingValues ->
@@ -115,7 +117,7 @@ fun HomeScreenContent(
                     top = 24.dp, start = 24.dp, end = 24.dp
                 ),
                     text = stringResource(R.string.play_a_game_learn),
-                    onClick = { onNavigateToLearnCountries() })
+                    onClick = { onNavigateToPlayScreen() })
             }
         }
     })
