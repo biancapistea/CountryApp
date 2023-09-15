@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.countryapp.ui.dashboard.DashboardQuizType
-import com.example.countryapp.ui.quiz.GeneralAspectsQuizQuestions
 import com.example.countryapp.ui.utils.StringUtil
 import com.example.domain.model.Country
 import com.example.domain.usecase.LoadAllCountriesUseCase
