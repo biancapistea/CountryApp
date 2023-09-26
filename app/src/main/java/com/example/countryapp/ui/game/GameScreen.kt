@@ -136,24 +136,41 @@ private fun ChosenWordRow(
         LazyRow {
             items(wordChosen!!.length) { letterIndex ->
                 val currentChar = wordChosen[letterIndex]
-                if (currentChar.isWhitespace()) {
-                    Spacer(modifier = Modifier.padding(16.dp))
+                when {
+                    currentChar.isWhitespace() -> {
+                        Spacer(modifier = Modifier.padding(16.dp))
+                    }
 
-                } else if (currentChar == '-' || currentChar.isLetter().not()) {
-                    Text(
-                        modifier = Modifier
-                            .padding(1.2.dp)
-                            .size(32.dp),
-                        text = "-",
-                        textAlign = TextAlign.Center,
-                        fontSize = 24.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                } else {
-                    WordLetter(
-                        letter = currentChar,
-                        correctLetters = correctLetters
-                    )
+                    currentChar == '-' || currentChar.isLetter().not() -> {
+                        Text(
+                            modifier = Modifier
+                                .padding(1.2.dp)
+                                .size(32.dp),
+                            text = "-",
+                            textAlign = TextAlign.Center,
+                            fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    currentChar == '\'' -> {
+                        Text(
+                            modifier = Modifier
+                                .padding(1.2.dp)
+                                .size(32.dp),
+                            text = "'",
+                            textAlign = TextAlign.Center,
+                            fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    else -> {
+                        WordLetter(
+                            letter = currentChar,
+                            correctLetters = correctLetters
+                        )
+                    }
                 }
             }
         }
