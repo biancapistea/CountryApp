@@ -100,6 +100,17 @@ class GameViewModel @Inject constructor(
                 countries[randomCountryIndex].name.common.uppercase()
             }
 
+            DashboardQuizType.COAT_OF_ARMS.name -> {
+                _uiState.update {
+                    it.copy(
+                        countryRandomFlag = countries[randomCountryIndex].coatOfArms?.png ?: "",
+                        countryRandomChosen = randomCountry,
+                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                    )
+                }
+                countries[randomCountryIndex].name.common.uppercase()
+            }
+
             else -> {
                 ""
             }
@@ -194,6 +205,22 @@ class GameViewModel @Inject constructor(
                     )
                 }
             }
+
+            DashboardQuizType.COAT_OF_ARMS.name -> {
+                _uiState.update {
+                    it.copy(
+                        wordRandomlyChosen = countries[randomCountryIndex].name.common.uppercase(),
+                        countryRandomFlag = countries[randomCountryIndex].coatOfArms?.png ?: "",
+                        countryRandomChosen = randomCountry,
+                        streakCount = streakCount,
+                        usedLetters = emptySet(),
+                        correctLetters = emptySet(),
+                        wrongLetters = emptySet(),
+                        livesLeft = 6,
+                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                    )
+                }
+            }
         }
     }
 
@@ -254,6 +281,22 @@ class GameViewModel @Inject constructor(
                     )
                 }
             }
+
+            DashboardQuizType.COAT_OF_ARMS.name -> {
+                _uiState.update {
+                    it.copy(
+                        wordRandomlyChosen = countries[randomCountryIndex].name.common.uppercase(),
+                        countryRandomChosen = randomCountry,
+                        countryRandomFlag = countries[randomCountryIndex].coatOfArms?.png ?: "",
+                        streakCount = streakCount,
+                        usedLetters = emptySet(),
+                        correctLetters = emptySet(),
+                        wrongLetters = emptySet(),
+                        livesLeft = 6,
+                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                    )
+                }
+            }
         }
     }
 
@@ -263,7 +306,6 @@ class GameViewModel @Inject constructor(
         val wordRandomlyChosen: String? = "",
         val countries: List<Country> = listOf(),
         val countryRandomFlag: String = "",
-        val countryRandomCoatOfArms: String = "",
         val countryRandomChosen: String = "",
         val question: String = "",
         val tipText: String = "",
