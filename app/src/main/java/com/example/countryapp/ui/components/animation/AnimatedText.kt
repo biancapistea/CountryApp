@@ -10,6 +10,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.countryapp.R
 
@@ -30,6 +31,6 @@ fun AnimatedText(count: Int = 0) {
             )
         }, label = ""
     ) { targetCount ->
-        Text(text = stringResource(id = R.string.WIN_COUNT_TEXT, targetCount))
+        Text(text = stringResource(id = R.string.WIN_COUNT_TEXT, targetCount), color = Color.Black)
     }
 }

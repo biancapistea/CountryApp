@@ -2,6 +2,7 @@ package com.example.countryapp.ui.game
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -30,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
@@ -84,9 +87,10 @@ private fun GameContent(
     uiState: GameViewModel.GameUiState
 ) {
     Log.d("Mai intra?", "iar am intrat")
-    TopAppBarRow(modifier = Modifier, onPopBack, onSkipPressed)
+    TopAppBarRow(onPopBack = onPopBack, onSkipPressed = onSkipPressed)
     Column(
         modifier = Modifier
+            .background(Color.White)
             .padding(horizontal = 16.dp)
             .fillMaxSize(),
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -183,7 +187,7 @@ fun TipAndCountText(tip: String, winCount: Int) {
             .padding(vertical = 16.dp)
             .fillMaxWidth(),
     ) {
-        Text(text = stringResource(id = R.string.TIP_TEXT, tip))
+        Text(text = stringResource(id = R.string.TIP_TEXT, tip), color = Color.Black)
         AnimatedText(count = winCount)
     }
 }
@@ -220,7 +224,7 @@ fun TopAppBarRow(
     onPopBack: () -> Boolean,
     onSkipPressed: () -> Unit
 ) {
-    Box(modifier = modifier.fillMaxWidth()) {
+    Box(modifier = modifier.fillMaxWidth().zIndex(2f)) {
         Image(
             modifier = Modifier
                 .clickable { onPopBack() }
@@ -229,10 +233,13 @@ fun TopAppBarRow(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = null
         )
-        Text(text = stringResource(R.string.skip), fontSize = 20.sp, modifier = Modifier
-            .align(Alignment.TopEnd)
-            .clickable { onSkipPressed() }
-            .padding(top = 24.dp, end = 16.dp)
+        Text(text = stringResource(R.string.skip),
+            color = Color.Black,
+            fontSize = 20.sp,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .clickable { onSkipPressed() }
+                .padding(top = 24.dp, end = 16.dp)
         )
     }
 }
