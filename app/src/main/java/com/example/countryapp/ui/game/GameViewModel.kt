@@ -21,8 +21,7 @@ import kotlin.random.Random
 class GameViewModel @Inject constructor(
     loadAllCountriesUseCase: LoadAllCountriesUseCase,
     savedStateHandle: SavedStateHandle
-) :
-    ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(GameUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -32,7 +31,6 @@ class GameViewModel @Inject constructor(
     private var wrongLetters: MutableSet<Char> = mutableSetOf()
 
     private var _currentLetterGuessed: Char = ' '
-    val isGameOver: Boolean get() = _uiState.value.livesLeft == 0
 
     private var _currentStreakCount: Int = 0
 
@@ -50,6 +48,8 @@ class GameViewModel @Inject constructor(
             }
         }
     }
+
+    fun isGameOver() = _uiState.value.livesLeft == 0
 
     private fun getQuestionByType(dashboardType: String): String {
         return when (dashboardType) {
@@ -75,40 +75,50 @@ class GameViewModel @Inject constructor(
         countries: List<Country>,
         dashboardType: String
     ): String {
-        val randomCountryIndex = Random.nextInt(0, countries.size - 1)
-        val randomCountry = countries[randomCountryIndex].name.common
-
         return when (dashboardType) {
             DashboardQuizType.CAPITALS.name -> {
+                val countriesWithCapitals = countries.filter { it.capital?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithCapitals.size - 1)
+                val randomCountry = countriesWithCapitals[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
                         countryRandomChosen = randomCountry,
-                        tipText = "If you think this country does not have a capital, write: Does not have"
+                        tipText = "It starts with the letter ${
+                            countriesWithCapitals[randomCountryIndex].capital?.first()?.first()
+                        }"
                     )
                 }
-                countries[randomCountryIndex].capital?.firstOrNull()?.uppercase() ?: ""
+                countriesWithCapitals[randomCountryIndex].capital?.firstOrNull()?.uppercase() ?: ""
             }
 
             DashboardQuizType.FLAGS.name -> {
+                val countriesWithFlags = countries.filter { it.flags?.png?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithFlags.size - 1)
+                val randomCountry = countriesWithFlags[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
-                        countryRandomFlag = countries[randomCountryIndex].flags?.png ?: "",
+                        countryRandomFlag = countriesWithFlags[randomCountryIndex].flags?.png ?: "",
                         countryRandomChosen = randomCountry,
-                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                        tipText = "It is a country from ${countriesWithFlags[randomCountryIndex].region}"
                     )
                 }
-                countries[randomCountryIndex].name.common.uppercase()
+                countriesWithFlags[randomCountryIndex].name.common.uppercase()
             }
 
             DashboardQuizType.COAT_OF_ARMS.name -> {
+                val countriesWithCoatOfArms =
+                    countries.filter { it.coatOfArms?.png?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithCoatOfArms.size - 1)
+                val randomCountry = countriesWithCoatOfArms[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
-                        countryRandomFlag = countries[randomCountryIndex].coatOfArms?.png ?: "",
+                        countryRandomFlag = countriesWithCoatOfArms[randomCountryIndex].coatOfArms?.png
+                            ?: "",
                         countryRandomChosen = randomCountry,
-                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                        tipText = "It is a country from ${countriesWithCoatOfArms[randomCountryIndex].region}"
                     )
                 }
-                countries[randomCountryIndex].name.common.uppercase()
+                countriesWithCoatOfArms[randomCountryIndex].name.common.uppercase()
             }
 
             else -> {
@@ -170,14 +180,14 @@ class GameViewModel @Inject constructor(
         dashboardType: String,
         streakCount: Int
     ) {
-        val randomCountryIndex = Random.nextInt(0, countries.size - 1)
-        val randomCountry = countries[randomCountryIndex].name.common
-
         when (dashboardType) {
             DashboardQuizType.CAPITALS.name -> {
+                val countriesWithCapitals = countries.filter { it.capital?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithCapitals.size - 1)
+                val randomCountry = countriesWithCapitals[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
-                        wordRandomlyChosen = countries[randomCountryIndex].capital?.firstOrNull()
+                        wordRandomlyChosen = countriesWithCapitals[randomCountryIndex].capital?.firstOrNull()
                             ?.uppercase() ?: "",
                         countryRandomChosen = randomCountry,
                         streakCount = streakCount,
@@ -185,39 +195,50 @@ class GameViewModel @Inject constructor(
                         correctLetters = emptySet(),
                         wrongLetters = emptySet(),
                         livesLeft = 6,
-                        question = "Capital of $randomCountry"
+                        question = "Capital of $randomCountry",
+                        tipText = "It starts with the letter ${
+                            countriesWithCapitals[randomCountryIndex].capital?.first()?.first()
+                        }"
                     )
                 }
             }
 
             DashboardQuizType.FLAGS.name -> {
+                val countriesWithFlags = countries.filter { it.flags?.png?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithFlags.size - 1)
+                val randomCountry = countriesWithFlags[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
-                        wordRandomlyChosen = countries[randomCountryIndex].name.common.uppercase(),
-                        countryRandomFlag = countries[randomCountryIndex].flags?.png ?: "",
+                        wordRandomlyChosen = countriesWithFlags[randomCountryIndex].name.common.uppercase(),
+                        countryRandomFlag = countriesWithFlags[randomCountryIndex].flags?.png ?: "",
                         countryRandomChosen = randomCountry,
                         streakCount = streakCount,
                         usedLetters = emptySet(),
                         correctLetters = emptySet(),
                         wrongLetters = emptySet(),
                         livesLeft = 6,
-                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                        tipText = "It is a country from ${countriesWithFlags[randomCountryIndex].region}"
                     )
                 }
             }
 
             DashboardQuizType.COAT_OF_ARMS.name -> {
+                val countriesWithCoatOfArms =
+                    countries.filter { it.coatOfArms?.png?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithCoatOfArms.size - 1)
+                val randomCountry = countriesWithCoatOfArms[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
-                        wordRandomlyChosen = countries[randomCountryIndex].name.common.uppercase(),
-                        countryRandomFlag = countries[randomCountryIndex].coatOfArms?.png ?: "",
+                        wordRandomlyChosen = countriesWithCoatOfArms[randomCountryIndex].name.common.uppercase(),
+                        countryRandomFlag = countriesWithCoatOfArms[randomCountryIndex].coatOfArms?.png
+                            ?: "",
                         countryRandomChosen = randomCountry,
                         streakCount = streakCount,
                         usedLetters = emptySet(),
                         correctLetters = emptySet(),
                         wrongLetters = emptySet(),
                         livesLeft = 6,
-                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                        tipText = "It is a country from ${countriesWithCoatOfArms[randomCountryIndex].region}"
                     )
                 }
             }
@@ -246,61 +267,72 @@ class GameViewModel @Inject constructor(
         dashboardType: String,
         streakCount: Int
     ) {
-        val randomCountryIndex = Random.nextInt(0, countries.size - 1)
-        val randomCountry = countries[randomCountryIndex].name.common
-
         when (dashboardType) {
             DashboardQuizType.CAPITALS.name -> {
+                val countriesWithCapitals = countries.filter { it.capital?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithCapitals.size - 1)
+                val randomCountry = countriesWithCapitals[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
-                        wordRandomlyChosen = countries[randomCountryIndex].capital?.firstOrNull()
+                        wordRandomlyChosen = countriesWithCapitals[randomCountryIndex].capital?.firstOrNull()
                             ?.uppercase() ?: "",
                         countryRandomChosen = randomCountry,
                         streakCount = streakCount,
                         usedLetters = emptySet(),
                         correctLetters = emptySet(),
                         wrongLetters = emptySet(),
-                        livesLeft = 6,
-                        question = "Capital of $randomCountry"
+                        livesLeft = uiState.value.livesLeft,
+                        question = "Capital of $randomCountry",
+                        tipText = "It starts with the letter ${
+                            countriesWithCapitals[randomCountryIndex].capital?.first()?.first()
+                        }"
                     )
                 }
             }
 
             DashboardQuizType.FLAGS.name -> {
+                val countriesWithFlags = countries.filter { it.flags?.png?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithFlags.size - 1)
+                val randomCountry = countriesWithFlags[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
-                        wordRandomlyChosen = countries[randomCountryIndex].name.common.uppercase(),
-                        countryRandomFlag = countries[randomCountryIndex].flags?.png ?: "",
+                        wordRandomlyChosen = countriesWithFlags[randomCountryIndex].name.common.uppercase(),
+                        countryRandomFlag = countriesWithFlags[randomCountryIndex].flags?.png ?: "",
                         countryRandomChosen = randomCountry,
                         streakCount = streakCount,
                         usedLetters = emptySet(),
                         correctLetters = emptySet(),
                         wrongLetters = emptySet(),
-                        livesLeft = 6,
-                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                        livesLeft = uiState.value.livesLeft,
+                        tipText = "It is a country from ${countriesWithFlags[randomCountryIndex].region}"
                     )
                 }
             }
 
             DashboardQuizType.COAT_OF_ARMS.name -> {
+                val countriesWithCoatOfArms =
+                    countries.filter { it.coatOfArms?.png?.isNotEmpty() == true }
+                val randomCountryIndex = Random.nextInt(0, countriesWithCoatOfArms.size - 1)
+                val randomCountry = countriesWithCoatOfArms[randomCountryIndex].name.common
                 _uiState.update {
                     it.copy(
-                        wordRandomlyChosen = countries[randomCountryIndex].name.common.uppercase(),
+                        wordRandomlyChosen = countriesWithCoatOfArms[randomCountryIndex].name.common.uppercase(),
                         countryRandomChosen = randomCountry,
-                        countryRandomFlag = countries[randomCountryIndex].coatOfArms?.png ?: "",
+                        countryRandomFlag = countriesWithCoatOfArms[randomCountryIndex].coatOfArms?.png
+                            ?: "",
                         streakCount = streakCount,
                         usedLetters = emptySet(),
                         correctLetters = emptySet(),
                         wrongLetters = emptySet(),
-                        livesLeft = 6,
-                        tipText = "It is a country from ${countries[randomCountryIndex].region}"
+                        livesLeft = uiState.value.livesLeft,
+                        tipText = "It is a country from ${countriesWithCoatOfArms[randomCountryIndex].region}"
                     )
                 }
             }
         }
     }
 
-    private fun increaseStreakCount() = if (!isGameOver) ++_currentStreakCount else 0
+    private fun increaseStreakCount() = if (!isGameOver()) ++_currentStreakCount else 0
 
     data class GameUiState(
         val wordRandomlyChosen: String? = "",

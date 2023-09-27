@@ -135,7 +135,6 @@ fun NavController(
                         composable("${Destinations.Game.name}/{dashboardType}") {
                             GameScreen(
                                 gameViewModel = hiltViewModel(),
-                                onNavigateUp = { navController.navigateUp() },
                                 onPopBack = { navController.popBackStack() }
                             )
                         }

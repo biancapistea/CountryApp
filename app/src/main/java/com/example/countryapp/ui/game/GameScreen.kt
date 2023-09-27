@@ -45,7 +45,6 @@ import com.example.countryapp.ui.dashboard.DashboardQuizType
 @Composable
 fun GameScreen(
     gameViewModel: GameViewModel,
-    onNavigateUp: () -> Unit,
     onPopBack: () -> Boolean
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -61,7 +60,7 @@ fun GameScreen(
         gameViewModel.resetStates()
     }
 
-    if (gameViewModel.isGameOver) {
+    if (gameViewModel.isGameOver()) {
         GameOverDialog(
             resetGame = { gameViewModel.resetStates() },
             wordChosen = uiState.wordRandomlyChosen,
@@ -141,7 +140,7 @@ private fun ChosenWordRow(
                         Spacer(modifier = Modifier.padding(16.dp))
                     }
 
-                    currentChar == '-' || currentChar.isLetter().not() -> {
+                    currentChar == '-' || currentChar.isLetter().not() || currentChar == ',' -> {
                         Text(
                             modifier = Modifier
                                 .padding(1.2.dp)
