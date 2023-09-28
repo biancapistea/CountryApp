@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
-    <string name="weather_app">Weather App</string>
     <string name="country_app">Country App</string>
     <string name="drawer_home">Home</string>
-    <string name="drawer_home_description">Welcome to Weather App! Here you can select a city from the list and see the forecast</string>
     <string name="drawer_dashboard">Dashboard</string>
     <string name="world_s_countries_challenge">World\'s Countries Challenge</string>
     <string name="play_and_learn_challenge">Let\'s play Hangman!</string>
@@ -31,4 +29,8 @@
     <string name="WIN_COUNT_TEXT">Streak count: %d</string>
     <string name="TIP_TEXT">"Tip: %s"</string>
     <string name="skip">Skip</string>
+    <string name="flags">Flags</string>
+    <string name="capitals">Capitals</string>
+    <string name="coat_of_arms">Coat of Arms</string>
+    <string name="general_aspects">General aspects</string>
 </resources>

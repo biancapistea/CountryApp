@@ -38,17 +38,17 @@ class GameDashboardViewModel @Inject constructor() :
                         DashboardViewModel.DashboardUiType(
                             type = DashboardQuizType.FLAGS,
                             teaserImage = R.drawable.image_worlds_flags,
-                            title = "Flags"
+                            title = R.string.flags
                         ),
                         DashboardViewModel.DashboardUiType(
                             type = DashboardQuizType.CAPITALS,
                             teaserImage = R.drawable.image_worlds_capitals,
-                            title = "Capitals"
+                            title = R.string.capitals
                         ),
                         DashboardViewModel.DashboardUiType(
                             type = DashboardQuizType.COAT_OF_ARMS,
                             teaserImage = R.drawable.ic_coat_of_arms,
-                            title = "Coat of Arms"
+                            title = R.string.coat_of_arms
                         )
                     )
                 )

@@ -24,7 +24,7 @@ class DashboardViewModel @Inject constructor() :
     data class DashboardUiType(
         val type: DashboardQuizType = DashboardQuizType.EMPTY,
         val teaserImage: Int = 0,
-        val title: String = ""
+        val title: Int = 0
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -41,22 +41,22 @@ class DashboardViewModel @Inject constructor() :
                         DashboardUiType(
                             type = DashboardQuizType.FLAGS,
                             teaserImage = R.drawable.image_worlds_flags,
-                            title = "Flags"
+                            title = R.string.flags
                         ),
                         DashboardUiType(
                             type = DashboardQuizType.CAPITALS,
                             teaserImage = R.drawable.image_worlds_capitals,
-                            title = "Capitals"
+                            title = R.string.capitals
                         ),
                         DashboardUiType(
                             type = DashboardQuizType.GENERAL_ASPECTS,
                             teaserImage = R.drawable.img_general_aspects_quiz,
-                            title = "General aspects"
+                            title = R.string.general_aspects
                         ),
                         DashboardUiType(
                             type = DashboardQuizType.COAT_OF_ARMS,
                             teaserImage = R.drawable.ic_coat_of_arms,
-                            title = "Coat of Arms"
+                            title = R.string.coat_of_arms
                         )
                     )
                 )

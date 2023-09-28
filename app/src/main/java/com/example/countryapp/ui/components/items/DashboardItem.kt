@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -40,7 +41,7 @@ fun DashboardItem(dashboardUiType: DashboardViewModel.DashboardUiType) {
                     .clip(RoundedCornerShape(6.dp)),
             )
             Text(
-                text = dashboardUiType.title,
+                text = stringResource(id = dashboardUiType.title),
                 color = Color.Black,
                 fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.graphik_regular)),
