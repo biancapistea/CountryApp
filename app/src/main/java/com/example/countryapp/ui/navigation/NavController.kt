@@ -89,7 +89,7 @@ fun NavController(
                                 drawerState = drawerState
                             )
                         }
-                        composable(Destinations.CountryDetails.name) { backStackEntry ->
+                        composable(Destinations.CountryDetails.name) {
                             val countryClicked =
                                 navController.previousBackStackEntry?.savedStateHandle?.get<Country>(
                                     "countryClicked"
