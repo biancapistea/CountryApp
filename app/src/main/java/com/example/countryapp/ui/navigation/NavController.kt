@@ -44,21 +44,7 @@ fun NavController(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     startDestination: String = Destinations.Splash.name
 ) {
-    Scaffold(topBar = {
-        //val coroutineScope = rememberCoroutineScope()
-//        Image(
-//            painter = painterResource(R.drawable.ic_menu),
-//            contentDescription = null,
-//            modifier = Modifier
-//                .padding(start = 8.dp, top = 8.dp)
-//                .clickable {
-//                    coroutineScope.launch {
-//                        drawerState.open()
-//                    }
-//                }
-//        )
-        //TODO: think of a way to have the menu on all screens and not add it manually on which screen I want
-    },
+    Scaffold(
         content = { paddingValues ->
             Surface {
                 ModalNavigationDrawer(
