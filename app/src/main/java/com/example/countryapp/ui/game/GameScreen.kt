@@ -144,7 +144,7 @@ private fun ChosenWordRow(
                         Spacer(modifier = Modifier.padding(16.dp))
                     }
 
-                    currentChar == '-' || currentChar.isLetter().not() || currentChar == ',' -> {
+                    currentChar == '-' -> {
                         Text(
                             modifier = Modifier
                                 .padding(1.2.dp)
@@ -162,6 +162,30 @@ private fun ChosenWordRow(
                                 .padding(1.2.dp)
                                 .size(32.dp),
                             text = "'",
+                            textAlign = TextAlign.Center,
+                            fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    currentChar == ',' -> {
+                        Text(
+                            modifier = Modifier
+                                .padding(1.2.dp)
+                                .size(32.dp),
+                            text = ",",
+                            textAlign = TextAlign.Center,
+                            fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    currentChar == '.' -> {
+                        Text(
+                            modifier = Modifier
+                                .padding(1.2.dp)
+                                .size(32.dp),
+                            text = ".",
                             textAlign = TextAlign.Center,
                             fontSize = 24.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -224,7 +248,9 @@ fun TopAppBarRow(
     onPopBack: () -> Boolean,
     onSkipPressed: () -> Unit
 ) {
-    Box(modifier = modifier.fillMaxWidth().zIndex(2f)) {
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .zIndex(2f)) {
         Image(
             modifier = Modifier
                 .clickable { onPopBack() }
