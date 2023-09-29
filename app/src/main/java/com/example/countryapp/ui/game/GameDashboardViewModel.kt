@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GameDashboardViewModel @Inject constructor() :
-    ViewModel() {
+class GameDashboardViewModel @Inject constructor() : ViewModel() {
     data class UiState(
         val headerImage: Int = R.drawable.image_country_flags_header,
         val headerTitle: Int = R.string.empty,
