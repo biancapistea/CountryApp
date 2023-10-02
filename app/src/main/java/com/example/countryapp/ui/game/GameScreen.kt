@@ -42,6 +42,7 @@ import com.example.countryapp.ui.components.animation.HeartAnimation
 import com.example.countryapp.ui.components.buttons.WordLetter
 import com.example.countryapp.ui.components.dialog.GameOverDialog
 import com.example.countryapp.ui.components.keyboard.KeyboardKey
+import com.example.countryapp.ui.components.loading.IndeterminateCircularIndicator
 import com.example.countryapp.ui.components.text.TitleText
 import com.example.countryapp.ui.dashboard.DashboardQuizType
 
@@ -71,12 +72,15 @@ fun GameScreen(
             exitGame = { onPopBack() }
         )
     }
-    GameContent(
-        onPopBack = onPopBack,
-        uiState = uiState,
-        checkUserGuess = { gameViewModel.checkUserGuess(it) },
-        onSkipPressed = { gameViewModel.onSkipPressed() }
-    )
+    IndeterminateCircularIndicator(uiState.isLoading)
+    if (!uiState.isLoading) {
+        GameContent(
+            onPopBack = onPopBack,
+            uiState = uiState,
+            checkUserGuess = { gameViewModel.checkUserGuess(it) },
+            onSkipPressed = { gameViewModel.onSkipPressed() }
+        )
+    }
 }
 
 @Composable
@@ -248,9 +252,11 @@ fun TopAppBarRow(
     onPopBack: () -> Boolean,
     onSkipPressed: () -> Unit
 ) {
-    Box(modifier = modifier
-        .fillMaxWidth()
-        .zIndex(2f)) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .zIndex(2f)
+    ) {
         Image(
             modifier = Modifier
                 .clickable { onPopBack() }

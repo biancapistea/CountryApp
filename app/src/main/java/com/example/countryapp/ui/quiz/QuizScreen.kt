@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
+import com.example.countryapp.ui.components.loading.IndeterminateCircularIndicator
 import com.example.countryapp.ui.components.text.ParagraphTextComponent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,11 +65,13 @@ fun QuizScreen(
         }
     }
 
+    IndeterminateCircularIndicator(uiState.isLoading)
+
     if (uiState.restartQuiz) {
         LaunchedEffect(Unit) {
             viewModel.updateRestartQuiz()
         }
-    } else {
+    } else if (!uiState.isLoading) {
         Quiz(
             uiState = uiState,
             onSelectedValue = viewModel::setSelectedValue,

@@ -36,13 +36,15 @@ class GameViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             loadAllCountriesUseCase.loadAllCountries().collectLatest { countries ->
                 _uiState.update {
                     it.copy(
                         countries = countries,
                         wordRandomlyChosen = getRandomWordByType(countries, dashboardType),
                         question = getQuestionByType(dashboardType),
-                        dashboardType = dashboardType
+                        dashboardType = dashboardType,
+                        isLoading = false
                     )
                 }
             }
@@ -335,6 +337,7 @@ class GameViewModel @Inject constructor(
     private fun increaseStreakCount() = if (!isGameOver()) ++_currentStreakCount else 0
 
     data class GameUiState(
+        val isLoading: Boolean = false,
         val wordRandomlyChosen: String? = "",
         val countries: List<Country> = listOf(),
         val countryRandomFlag: String = "",

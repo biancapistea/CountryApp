@@ -33,6 +33,7 @@ class QuizViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             loadAllCountriesUseCase.loadAllCountries().collectLatest { countries ->
                 Log.d("countries returned by server", countries.toString())
                 _uiState.update {
@@ -45,7 +46,8 @@ class QuizViewModel @Inject constructor(
                         ),
                         quizHeaderImage = getHeaderImageByType(dashboardType),
                         shouldShowImageAnswers = dashboardType == DashboardQuizType.FLAGS.name || dashboardType == DashboardQuizType.COAT_OF_ARMS.name,
-                        defaultAnswerImage = getDefaultHeaderImage(dashboardType)
+                        defaultAnswerImage = getDefaultHeaderImage(dashboardType),
+                        isLoading = false
                     )
                 }
             }
@@ -377,6 +379,7 @@ class QuizViewModel @Inject constructor(
 
     data class UiState(
         val isQuizFinalized: Boolean = false,
+        val isLoading: Boolean = false,
         val questions: List<Quiz> = listOf(),
         val quizQuestion: String = "",
         val quizHeaderImage: Int = 0,
