@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
             onBackPressedDispatcher.onBackPressed()
             finish()
         } else {
-            Toast.makeText(baseContext, "Press back again to exit application", Toast.LENGTH_SHORT).show()
+            Toast.makeText(baseContext, getString(R.string.exit_application), Toast.LENGTH_SHORT).show()
         }
         pressedTime = System.currentTimeMillis()
     }

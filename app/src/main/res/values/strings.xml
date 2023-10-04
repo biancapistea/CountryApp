@@ -33,4 +33,5 @@
     <string name="capitals">Capitals</string>
     <string name="coat_of_arms">Coat of Arms</string>
     <string name="general_aspects">General aspects</string>
+    <string name="exit_application">Press back again to exit application</string>
 </resources>
