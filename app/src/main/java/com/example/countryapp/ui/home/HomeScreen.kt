@@ -2,45 +2,33 @@ package com.example.countryapp.ui.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
-import com.example.countryapp.ui.components.buttons.BlueButtonComponent
-import com.example.countryapp.ui.components.text.TitleText
+import com.example.countryapp.ui.components.items.HomeItem
+import com.example.countryapp.ui.models.HomeSectionItem
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,11 +40,17 @@ fun HomeScreen(
     onNavigateToLearnCountries: () -> Unit,
     onNavigateToPlayScreen: () -> Unit
 ) {
-    HomeScreenContent(drawerState, onNavigateToDashboard, onNavigateToLearnCountries, onNavigateToPlayScreen)
+    HomeScreenContent(
+        drawerState,
+        onNavigateToDashboard,
+        onNavigateToLearnCountries,
+        onNavigateToPlayScreen
+    )
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreenContent(
     drawerState: DrawerState,
@@ -64,61 +58,95 @@ fun HomeScreenContent(
     onNavigateToLearnCountries: () -> Unit,
     onNavigateToPlayScreen: () -> Unit
 ) {
+    //TODO: sa ma gandesc cum pot muta lista  altundeva
+    val images = listOf(
+        HomeSectionItem(
+            headerImage = R.drawable.img_dashboard_quiz,
+            description = "Would you like to test your knowledge about all the countries in the world? You can select the quiz type and answer the quiz questions to test your knowledge about the world's countries. You can also select from which region you want to receive questions.",
+            actionText = "Go to quiz game",
+            title = "Play & Discover new countries",
+            onClickOnActionText = onNavigateToDashboard
+        ),
+        HomeSectionItem(
+            headerImage = R.drawable.img_hangman_home_item,
+            description = "Do you feel like you know every capital or flag of all the countries in the world? Then, you can challenge yourself by playing the hangman game. You will need to guess the capital of the country or the country based on the flag. What do you say?",
+            actionText = "Go to hangman game",
+            title = "Play & Learn",
+            onClickOnActionText = onNavigateToPlayScreen
+        ),
+        HomeSectionItem(
+            headerImage = R.drawable.img_header_dashboard,
+            description = "Do you feel like you need to learn/ find out more details about the countries in the world? You can try the Training Mode and then challenge yourself by taking the quiz or playing hangman!",
+            actionText = "Go to training",
+            title = "Learn & Train",
+            onClickOnActionText = onNavigateToLearnCountries
+        ),
+    )
+
+    val pageState = rememberPagerState { images.size }
     val coroutineScope = rememberCoroutineScope()
-    Scaffold(content = { paddingValues ->
-        Column(
-            Modifier
-                .wrapContentSize()
-                .padding(top = 52.dp)
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .zIndex(2f)
         ) {
-            TitleText(text = stringResource(R.string.app_name), modifier = Modifier.zIndex(2f))
-        }
-        Box(modifier = Modifier.fillMaxSize()) {
-            Box(
+            Image(painter = painterResource(R.drawable.ic_menu),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(top = 24.dp, start = 12.dp)
                     .zIndex(2f)
-            ) {
-                Image(painter = painterResource(R.drawable.ic_menu),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(top = 24.dp, start = 12.dp)
-                        .zIndex(2f)
-                        .clickable {
-                            coroutineScope.launch {
-                                drawerState.open()
-                            }
-                        })
-            }
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(R.drawable.img_geography_background),
-                contentDescription = "background_image",
-                contentScale = ContentScale.Crop
-            )
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(top = 120.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                BlueButtonComponent(paddingValues = PaddingValues(
-                    top = 52.dp, start = 24.dp, end = 24.dp
-                ),
-                    text = stringResource(R.string.test_your_knowledge),
-                    onClick = { onNavigateToDashboard() })
-                BlueButtonComponent(paddingValues = PaddingValues(
-                    top = 24.dp, start = 24.dp, end = 24.dp
-                ),
-                    text = stringResource(id = R.string.learn_and_train),
-                    onClick = { onNavigateToLearnCountries() })
-                BlueButtonComponent(paddingValues = PaddingValues(
-                    top = 24.dp, start = 24.dp, end = 24.dp
-                ),
-                    text = stringResource(R.string.play_a_game_learn),
-                    onClick = { onNavigateToPlayScreen() })
+                    .clickable {
+                        coroutineScope.launch {
+                            drawerState.open()
+                        }
+                    })
+        }
+        HorizontalPager(state = pageState) { pageNumber ->
+            Box {
+                HomeItem(
+                    headerImage = images[pageNumber].headerImage,
+                    description = images[pageNumber].description,
+                    actionText = images[pageNumber].actionText,
+                    title = images[pageNumber].title,
+                    onClickOnActionText = images[pageNumber].onClickOnActionText
+                )
+                Row(
+                    Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(images.size) { iteration ->
+                        val dot =
+                            if (pageState.currentPage == iteration) R.drawable.ic_white_dot_selected else R.drawable.ic_white_dot_unselected
+                        Image(
+                            painter = painterResource(dot),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(26.dp)
+                                .clickable {
+                                    coroutineScope.launch {
+                                        pageState.animateScrollToPage(iteration)
+                                    }
+                                }
+                                .padding(bottom = 16.dp, end = 8.dp),
+                        )
+                    }
+                }
             }
         }
-    })
+        LaunchedEffect(pageState.currentPage) {
+            delay(5000)
+            coroutineScope.launch {
+                var newPosition = pageState.currentPage + 1
+                if (newPosition > images.size - 1) {
+                    newPosition = 0
+                }
+                pageState.animateScrollToPage(newPosition)
+            }
+        }
+    }
 }

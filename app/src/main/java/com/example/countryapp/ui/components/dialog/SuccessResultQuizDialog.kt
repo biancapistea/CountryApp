@@ -1,4 +1,4 @@
-package com.example.countryapp.ui.quiz
+package com.example.countryapp.ui.components.dialog
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

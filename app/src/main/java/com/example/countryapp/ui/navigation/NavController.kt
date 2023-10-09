@@ -29,10 +29,10 @@ import com.example.countryapp.ui.learn.LearnScreen
 import com.example.countryapp.ui.learn.countrydetails.CountryDetailsScreen
 import com.example.countryapp.ui.models.Country
 import com.example.countryapp.ui.models.Name
-import com.example.countryapp.ui.quiz.IncorrectQuizResultDialog
+import com.example.countryapp.ui.components.dialog.IncorrectQuizResultDialog
 import com.example.countryapp.ui.quiz.QuizScreen
 import com.example.countryapp.ui.quiz.QuizViewModel
-import com.example.countryapp.ui.quiz.SuccessResultQuizDialog
+import com.example.countryapp.ui.components.dialog.SuccessResultQuizDialog
 import com.example.countryapp.ui.quiz.selectregion.RegionQuizScreen
 import com.example.countryapp.ui.splash.SplashScreen
 
