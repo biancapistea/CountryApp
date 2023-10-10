@@ -67,7 +67,7 @@ class QuizViewModel @Inject constructor(
             DashboardQuizType.FLAGS.name -> R.drawable.image_country_flags_header
             DashboardQuizType.CAPITALS.name -> R.drawable.ic_capitals_world
             DashboardQuizType.COAT_OF_ARMS.name -> R.drawable.ic_coat_of_arms
-            DashboardQuizType.GENERAL_ASPECTS.name -> R.drawable.img_general_aspects_quiz
+            DashboardQuizType.GENERAL_ASPECTS.name -> R.drawable.img_travelling
             else -> 0
         }
     }
