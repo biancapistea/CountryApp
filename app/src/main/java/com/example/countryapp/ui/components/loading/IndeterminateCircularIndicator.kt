@@ -1,5 +1,6 @@
 package com.example.countryapp.ui.components.loading
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
@@ -7,6 +8,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.countryapp.R
@@ -15,7 +17,7 @@ import com.example.countryapp.R
 fun IndeterminateCircularIndicator(isLoading: Boolean = false) {
     if (!isLoading) return
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
         CircularProgressIndicator(
             modifier = Modifier
                 .width(64.dp)
