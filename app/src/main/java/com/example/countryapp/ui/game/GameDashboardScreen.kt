@@ -44,9 +44,11 @@ import com.example.countryapp.R
 import com.example.countryapp.ui.components.customgriditems.gridItems
 import com.example.countryapp.ui.components.items.DashboardItem
 import com.example.countryapp.ui.components.text.TitleText
+import com.example.countryapp.ui.connectivity.ConnectivityStatus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun GameDashboardScreen(
     viewModel: GameDashboardViewModel,
@@ -62,7 +64,13 @@ fun GameDashboardScreen(
         }
     }
 
-    GameDashboardContent(uiState, onDashboardTypePressed, drawerState)
+    ConnectivityStatus(
+        GameDashboardContent(
+            uiState,
+            onDashboardTypePressed,
+            drawerState
+        )
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

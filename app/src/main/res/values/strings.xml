@@ -34,4 +34,6 @@
     <string name="coat_of_arms">Coat of Arms</string>
     <string name="general_aspects">General aspects</string>
     <string name="exit_application">Press back again to exit application</string>
+    <string name="oops_no_internet_connection">Oops! No internet connection</string>
+    <string name="no_internet_description">Make sure wifi or cellular data is turned on.</string>
 </resources>

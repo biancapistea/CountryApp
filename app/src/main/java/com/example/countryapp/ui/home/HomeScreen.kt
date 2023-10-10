@@ -27,11 +27,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.items.HomeItem
+import com.example.countryapp.ui.connectivity.ConnectivityStatus
 import com.example.countryapp.ui.models.HomeSectionItem
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
@@ -40,11 +42,13 @@ fun HomeScreen(
     onNavigateToLearnCountries: () -> Unit,
     onNavigateToPlayScreen: () -> Unit
 ) {
-    HomeScreenContent(
-        drawerState,
-        onNavigateToDashboard,
-        onNavigateToLearnCountries,
-        onNavigateToPlayScreen
+    ConnectivityStatus(
+        HomeScreenContent(
+            drawerState,
+            onNavigateToDashboard,
+            onNavigateToLearnCountries,
+            onNavigateToPlayScreen
+        )
     )
 }
 

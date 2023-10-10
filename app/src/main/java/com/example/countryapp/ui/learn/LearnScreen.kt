@@ -27,10 +27,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.section.ExpandableList
 import com.example.countryapp.ui.components.section.SectionData
+import com.example.countryapp.ui.connectivity.ConnectivityStatus
 import com.example.countryapp.ui.models.Country
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun LearnScreen(
     viewModel: LearnViewModel,
@@ -46,7 +48,9 @@ fun LearnScreen(
         }
     }
 
-    LearnCountriesList(uiState, onCountryClick, drawerState)
+    ConnectivityStatus(
+        LearnCountriesList(uiState, onCountryClick, drawerState)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

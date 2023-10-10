@@ -46,9 +46,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.loading.IndeterminateCircularIndicator
 import com.example.countryapp.ui.components.text.ParagraphTextComponent
+import com.example.countryapp.ui.connectivity.ConnectivityStatus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun QuizScreen(
     viewModel: QuizViewModel,
@@ -72,12 +75,15 @@ fun QuizScreen(
             viewModel.updateRestartQuiz()
         }
     } else if (!uiState.isLoading) {
-        Quiz(
-            uiState = uiState,
-            onSelectedValue = viewModel::setSelectedValue,
-            onAnswerCheckListener = viewModel::checkAnswer,
-            onNextButtonClicked = viewModel::clearQuestion,
-            onExitQuizPressed = onExitQuizPressed
+        ConnectivityStatus(
+            screenContent =
+            Quiz(
+                uiState = uiState,
+                onSelectedValue = viewModel::setSelectedValue,
+                onAnswerCheckListener = viewModel::checkAnswer,
+                onNextButtonClicked = viewModel::clearQuestion,
+                onExitQuizPressed = onExitQuizPressed
+            )
         )
     }
 
