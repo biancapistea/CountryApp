@@ -61,14 +61,14 @@ fun HomeScreenContent(
     //TODO: sa ma gandesc cum pot muta lista  altundeva
     val images = listOf(
         HomeSectionItem(
-            headerImage = R.drawable.img_dashboard_quiz,
+            headerImage = R.drawable.img_discover_countries,
             description = "Would you like to test your knowledge about all the countries in the world? You can select the quiz type and answer the quiz questions to test your knowledge about the world's countries. You can also select from which region you want to receive questions.",
             actionText = "Go to quiz game",
             title = "Play & Discover new countries",
             onClickOnActionText = onNavigateToDashboard
         ),
         HomeSectionItem(
-            headerImage = R.drawable.img_hangman_home_item,
+            headerImage = R.drawable.img_play_hangman_guess,
             description = "Do you feel like you know every capital or flag of all the countries in the world? Then, you can challenge yourself by playing the hangman game. You will need to guess the capital of the country or the country based on the flag. What do you say?",
             actionText = "Go to hangman game",
             title = "Play & Learn",
