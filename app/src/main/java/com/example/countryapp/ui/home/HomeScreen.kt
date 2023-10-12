@@ -85,6 +85,34 @@ fun HomeScreenContent(
             title = "Learn & Train",
             onClickOnActionText = onNavigateToLearnCountries
         ),
+        HomeSectionItem(
+            headerImage = R.drawable.img_berlin,
+            description = "You don't know where to travel next? Berlin, capital of Germany can be the best choice. Berlin has been the stage for a lot of world history and not just the fall of the Berlin Wall. You can still discover the traces of history in countless places around the capital. You can also explore traces of history in the modernist housing estates, which are UNESCO World Heritage Sites.",
+            actionText = "Learn about Germany",
+            title = "Visit Berlin",
+            onClickOnActionText = onNavigateToLearnCountries //TODO: aici trebuie sa fac trimitere fix la pagina cu berlin!!
+        ),
+        HomeSectionItem(
+            headerImage = R.drawable.img_rome,
+            description = "You don't know where to travel next? Rome, capital of Italy can be the best choice. Visiting Rome is a life-changing experience thanks to its history, monuments and beauty. The centre boasts legendary sites such as the Colosseum, the Fori Imperiali, the Pantheon or the Fountain of Trevi, but also charming neighbourhoods where you can breathe all the authentic Romanness, full of local culture and good food. Without forgetting about the Vatican and Piazza San Pietro, among the most visited religious destinations in the world.",
+            actionText = "Learn about Italy",
+            title = "Visit Rome",
+            onClickOnActionText = onNavigateToLearnCountries //TODO: aici trebuie sa fac trimitere fix la pagina cu berlin!!
+        ),
+        HomeSectionItem(
+            headerImage = R.drawable.img_bangkok,
+            description = "Bangkok is the most visited city in the world. It's the jumping-off point for many trips to Thailand and the rest of Southeast Asia, with an important international airport, but there are so many more reasons to visit. Lively traditional markets and exquisite golden temples - where you'll be immersed in the daily life of locals as it has existed for centuries - are found side by side with soaring glass skyscrapers, fashionable rooftop bars, and immense modern malls. ",
+            actionText = "Learn about Thailand",
+            title = "Visit Bangkok",
+            onClickOnActionText = onNavigateToLearnCountries //TODO: aici trebuie sa fac trimitere fix la pagina cu berlin!!
+        ),
+        HomeSectionItem(
+            headerImage = R.drawable.img_dubai,
+            description = "Beautiful beaches, record-breaking attractions and experiences like no other – Dubai is the place to be in 2023. It's no wonder it has been named Tripadvisor's #1 Most Popular Destination in the World for the second year running. Let's explore!",
+            actionText = "Learn about United Arab Emirates",
+            title = "Visit Dubai",
+            onClickOnActionText = onNavigateToLearnCountries //TODO: aici trebuie sa fac trimitere fix la pagina cu berlin!!
+        ),
     )
 
     val pageState = rememberPagerState { images.size }
