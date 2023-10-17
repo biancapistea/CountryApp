@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -19,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import com.example.countryapp.R
@@ -66,41 +68,40 @@ fun NavController(
                         scope.launch { drawerState.close() }
                     },
                     drawerState = drawerState,
-                    defaultPick = Destinations.Dashboard,
+                    defaultPick = Destinations.Home,
                     menuItems = DrawerParams.drawerButtons,
                     onClick = { onUserPickedOption ->
                         // when user picks the path - navigates to new one
                         navController.navigate(onUserPickedOption.name)
-                        when (onUserPickedOption) {
-                            Destinations.Dashboard -> {
-                                navController.navigate(onUserPickedOption.name) {
-                                }
-                            }
-
-                            else -> {
-                                navController.navigate(onUserPickedOption.name)
-                            }
-                        }
                     }
                 )
             },
             content = {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
                 Surface(Modifier.noRippleClickable { scope.launch { drawerState.close() } }) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .zIndex(2f)
+                    if (currentRoute == Destinations.Home.name
+                        || currentRoute == Destinations.GameDashboard.name
+                        || currentRoute == Destinations.Dashboard.name
+                        || currentRoute == Destinations.LearnCountries.name
                     ) {
-                        Image(painter = painterResource(R.drawable.ic_menu),
-                            contentDescription = null,
+                        Box(
                             modifier = Modifier
-                                .padding(top = 24.dp, start = 12.dp)
+                                .fillMaxWidth()
                                 .zIndex(2f)
-                                .clickable {
-                                    scope.launch {
-                                        drawerState.open()
-                                    }
-                                })
+                        ) {
+                            Image(painter = painterResource(R.drawable.ic_menu),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(top = 24.dp, start = 12.dp)
+                                    .zIndex(2f)
+                                    .clickable {
+                                        scope.launch {
+                                            drawerState.open()
+                                        }
+                                    })
+                        }
                     }
                     NavHost(
                         navController = navController,
