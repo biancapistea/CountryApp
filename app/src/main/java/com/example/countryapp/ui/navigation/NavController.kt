@@ -2,26 +2,35 @@ package com.example.countryapp.ui.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import com.example.countryapp.R
+import com.example.countryapp.ui.components.dialog.IncorrectQuizResultDialog
+import com.example.countryapp.ui.components.dialog.SuccessResultQuizDialog
 import com.example.countryapp.ui.dashboard.DashboardQuizType
 import com.example.countryapp.ui.dashboard.DashboardScreen
-import com.example.countryapp.ui.drawer.AppDrawerContent
+import com.example.countryapp.ui.drawer.AnimatedDrawer
+import com.example.countryapp.ui.drawer.AnimatedDrawerState
 import com.example.countryapp.ui.drawer.DrawerParams
+import com.example.countryapp.ui.drawer.MenuOptions
+import com.example.countryapp.ui.drawer.rememberAnimatedDrawerState
 import com.example.countryapp.ui.game.GameDashboardScreen
 import com.example.countryapp.ui.game.GameScreen
 import com.example.countryapp.ui.home.HomeScreen
@@ -29,39 +38,74 @@ import com.example.countryapp.ui.learn.LearnScreen
 import com.example.countryapp.ui.learn.countrydetails.CountryDetailsScreen
 import com.example.countryapp.ui.models.Country
 import com.example.countryapp.ui.models.Name
-import com.example.countryapp.ui.components.dialog.IncorrectQuizResultDialog
 import com.example.countryapp.ui.quiz.QuizScreen
 import com.example.countryapp.ui.quiz.QuizViewModel
-import com.example.countryapp.ui.components.dialog.SuccessResultQuizDialog
 import com.example.countryapp.ui.quiz.selectregion.RegionQuizScreen
 import com.example.countryapp.ui.splash.SplashScreen
+import com.example.countryapp.ui.utils.noRippleClickable
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavController(
     navController: NavHostController = rememberNavController(),
-    drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
+    drawerState: AnimatedDrawerState = rememberAnimatedDrawerState(
+        drawerWidth = 280.dp,
+    ),
     startDestination: String = Destinations.Splash.name
 ) {
-    Scaffold(
-        content = { paddingValues ->
-            Surface {
-                ModalNavigationDrawer(
+    Box(modifier = Modifier.fillMaxSize()) {
+        val scope = rememberCoroutineScope()
+        AnimatedDrawer(
+            modifier = Modifier.fillMaxSize(),
+            state = drawerState,
+            drawerContent = {
+                MenuOptions(
+                    modifier = Modifier.fillMaxSize(),
+                    onCloseClick = {
+                        scope.launch { drawerState.close() }
+                    },
                     drawerState = drawerState,
-                    modifier = Modifier.padding(paddingValues),
-                    drawerContent = {
-                        AppDrawerContent(
-                            drawerState = drawerState,
-                            menuItems = DrawerParams.drawerButtons,
-                            defaultPick = Destinations.Home
-                        ) { onUserPickedOption ->
-                            // when user picks the path - navigates to new one
-                            navController.navigate(onUserPickedOption.name)
+                    defaultPick = Destinations.Dashboard,
+                    menuItems = DrawerParams.drawerButtons,
+                    onClick = { onUserPickedOption ->
+                        // when user picks the path - navigates to new one
+                        navController.navigate(onUserPickedOption.name)
+                        when (onUserPickedOption) {
+                            Destinations.Dashboard -> {
+                                navController.navigate(onUserPickedOption.name) {
+                                }
+                            }
+
+                            else -> {
+                                navController.navigate(onUserPickedOption.name)
+                            }
                         }
                     }
-                ) {
-                    NavHost(navController = navController, startDestination = startDestination) {
+                )
+            },
+            content = {
+                Surface(Modifier.noRippleClickable { scope.launch { drawerState.close() } }) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .zIndex(2f)
+                    ) {
+                        Image(painter = painterResource(R.drawable.ic_menu),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(top = 24.dp, start = 12.dp)
+                                .zIndex(2f)
+                                .clickable {
+                                    scope.launch {
+                                        drawerState.open()
+                                    }
+                                })
+                    }
+                    NavHost(
+                        navController = navController,
+                        startDestination = startDestination
+                    ) {
                         composable(Destinations.Splash.name) {
                             SplashScreen(
                                 onNavigateToDashboard = { navController.navigate(Destinations.Home.name) },
@@ -70,9 +114,12 @@ fun NavController(
                         }
                         composable(Destinations.Home.name) {
                             HomeScreen(
-                                drawerState = drawerState,
                                 onNavigateToDashboard = { navController.navigate(Destinations.Dashboard.name) },
-                                onNavigateToLearnCountries = { navController.navigate(Destinations.LearnCountries.name) },
+                                onNavigateToLearnCountries = {
+                                    navController.navigate(
+                                        Destinations.LearnCountries.name
+                                    )
+                                },
                                 onNavigateToPlayScreen = { navController.navigate(Destinations.GameDashboard.name) }
                             )
                         }
@@ -85,8 +132,7 @@ fun NavController(
                                         value = countryClicked
                                     )
                                     navController.navigate(Destinations.CountryDetails.name)
-                                },
-                                drawerState = drawerState
+                                }
                             )
                         }
                         composable(Destinations.CountryDetails.name) {
@@ -114,8 +160,7 @@ fun NavController(
                                     } else {
                                         navController.navigate("${Destinations.RegionType.name}/${type.name}")
                                     }
-                                },
-                                drawerState = drawerState
+                                }
                             )
                         }
                         composable("${Destinations.Game.name}/{dashboardType}") {
@@ -127,14 +172,14 @@ fun NavController(
                         composable(Destinations.GameDashboard.name) {
                             GameDashboardScreen(
                                 viewModel = hiltViewModel(),
-                                drawerState = drawerState,
                                 onDashboardTypePressed = { type ->
                                     navController.navigate("${Destinations.Game.name}/${type.name}")
                                 }
                             )
                         }
                         composable("${Destinations.RegionType.name}/{dashboardType}") { backStackEntry ->
-                            val dashboardType = backStackEntry.arguments?.getString("dashboardType")
+                            val dashboardType =
+                                backStackEntry.arguments?.getString("dashboardType")
                             RegionQuizScreen(
                                 viewModel = hiltViewModel(),
                                 onRegionTypePressed = { selectedRegionType ->
@@ -174,7 +219,6 @@ fun NavController(
                         }
                     }
                 }
-            }
-        }
-    )
+            })
+    }
 }

@@ -45,7 +45,7 @@ fun ExpandableList(sections: List<SectionData>, explainingMessage: String = "") 
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 32.dp, end = 32.dp, top = 12.dp, bottom = 8.dp)
+                        .padding(start = 32.dp, end = 32.dp, top = 64.dp, bottom = 8.dp)
                 )
             }
             sections.onEachIndexed { index, sectionData ->

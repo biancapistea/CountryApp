@@ -1,10 +1,7 @@
 package com.example.countryapp.ui.game
 
-import com.example.countryapp.ui.dashboard.DashboardQuizType
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,14 +13,11 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.countryapp.R
@@ -45,14 +38,14 @@ import com.example.countryapp.ui.components.customgriditems.gridItems
 import com.example.countryapp.ui.components.items.DashboardItem
 import com.example.countryapp.ui.components.text.TitleText
 import com.example.countryapp.ui.connectivity.ConnectivityStatus
+import com.example.countryapp.ui.dashboard.DashboardQuizType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun GameDashboardScreen(
     viewModel: GameDashboardViewModel,
-    onDashboardTypePressed: (DashboardQuizType) -> Unit = {}, drawerState: DrawerState
+    onDashboardTypePressed: (DashboardQuizType) -> Unit = {}
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -67,18 +60,15 @@ fun GameDashboardScreen(
     ConnectivityStatus(
         GameDashboardContent(
             uiState,
-            onDashboardTypePressed,
-            drawerState
+            onDashboardTypePressed
         )
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GameDashboardContent(
     uiState: GameDashboardViewModel.UiState,
     onDashboardTypePressed: (DashboardQuizType) -> Unit,
-    drawerState: DrawerState
 ) {
     val listState = rememberLazyListState()
     Column(
@@ -87,7 +77,6 @@ private fun GameDashboardContent(
             .wrapContentSize()
             .background(Color.White)
     ) {
-        val coroutineScope = rememberCoroutineScope()
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -98,16 +87,6 @@ private fun GameDashboardContent(
                 Box(
                     modifier = Modifier.wrapContentSize()
                 ) {
-                    Image(painter = painterResource(R.drawable.ic_menu),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(top = 24.dp, start = 12.dp)
-                            .zIndex(2f)
-                            .clickable {
-                                coroutineScope.launch {
-                                    drawerState.open()
-                                }
-                            })
                     Image(
                         modifier = Modifier
                             .fillMaxWidth()

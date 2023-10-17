@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.items.HomeItem
 import com.example.countryapp.ui.connectivity.ConnectivityStatus
@@ -33,18 +30,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-    drawerState: DrawerState,
     onNavigateToDashboard: () -> Unit,
     onNavigateToLearnCountries: () -> Unit,
     onNavigateToPlayScreen: () -> Unit
 ) {
     ConnectivityStatus(
         HomeScreenContent(
-            drawerState,
             onNavigateToDashboard,
             onNavigateToLearnCountries,
             onNavigateToPlayScreen
@@ -54,10 +49,9 @@ fun HomeScreen(
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreenContent(
-    drawerState: DrawerState,
     onNavigateToDashboard: () -> Unit,
     onNavigateToLearnCountries: () -> Unit,
     onNavigateToPlayScreen: () -> Unit
@@ -119,22 +113,6 @@ fun HomeScreenContent(
     val coroutineScope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .zIndex(2f)
-        ) {
-            Image(painter = painterResource(R.drawable.ic_menu),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(top = 24.dp, start = 12.dp)
-                    .zIndex(2f)
-                    .clickable {
-                        coroutineScope.launch {
-                            drawerState.open()
-                        }
-                    })
-        }
         HorizontalPager(state = pageState) { pageNumber ->
             Box {
                 HomeItem(
@@ -170,6 +148,7 @@ fun HomeScreenContent(
                 }
             }
         }
+
         LaunchedEffect(pageState.currentPage) {
             delay(5000)
             coroutineScope.launch {
@@ -180,5 +159,6 @@ fun HomeScreenContent(
                 pageState.animateScrollToPage(newPosition)
             }
         }
+
     }
 }
