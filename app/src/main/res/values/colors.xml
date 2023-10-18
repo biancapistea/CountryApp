@@ -10,6 +10,8 @@
     <color name="red">#E62236</color>
     <color name="transparent">#00000000</color>
 
+    <color name="menu_item_selected_background">#1AFFFFFF</color>
+
     <color name="transparent_black_45">#73000000</color>
 
     <color name="light_blue_primary">#20C2D8</color>

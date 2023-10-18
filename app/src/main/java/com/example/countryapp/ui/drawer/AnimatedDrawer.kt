@@ -28,7 +28,6 @@ fun AnimatedDrawer(
             content()
         }
     ) { measure, constraints ->
-        // 8
         val (drawerContentMeasurable, contentMeasurable) = measure
         val drawerContentConstraints = Constraints.fixed(
             width = state.drawerWidth.coerceAtMost(constraints.maxWidth.toFloat()).toInt(),
