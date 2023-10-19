@@ -137,15 +137,3 @@ fun <T> AppDrawerItem(
         }
     }
 }
-
-@Composable
-fun rememberAnimatedDrawerState(
-    drawerWidth: Dp,
-): AnimatedDrawerState {
-    val density = LocalDensity.current.density
-    return remember {
-        AnimatedDrawerStateImpl(
-            drawerWidth = drawerWidth.value * density,
-        )
-    }
-}

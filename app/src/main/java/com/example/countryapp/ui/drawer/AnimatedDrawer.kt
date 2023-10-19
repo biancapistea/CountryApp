@@ -2,10 +2,13 @@ package com.example.countryapp.ui.drawer
 
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.countryapp.R
@@ -57,5 +60,17 @@ fun AnimatedDrawer(
                 translationX = state.drawerTranslationX
             }
         }
+    }
+}
+
+@Composable
+fun rememberAnimatedDrawerState(
+    drawerWidth: Dp,
+): AnimatedDrawerState {
+    val density = LocalDensity.current.density
+    return remember {
+        AnimatedDrawerStateImpl(
+            drawerWidth = drawerWidth.value * density,
+        )
     }
 }
