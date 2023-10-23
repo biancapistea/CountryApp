@@ -37,9 +37,8 @@ fun connectivityState(): State<ConnectionState> {
 
 @ExperimentalCoroutinesApi
 @Composable
-fun ConnectivityStatus(screenContent: Unit) {
+fun ConnectivityStatus(screenContent: @Composable () -> Unit) {
     val connection by connectivityState()
-
     val isConnected = connection === ConnectionState.Available
 
     if (!isConnected) {
@@ -68,6 +67,6 @@ fun ConnectivityStatus(screenContent: Unit) {
             )
         }
     } else {
-        screenContent
+        screenContent()
     }
 }

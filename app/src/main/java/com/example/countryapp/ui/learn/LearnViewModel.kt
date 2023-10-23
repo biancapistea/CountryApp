@@ -3,7 +3,6 @@ package com.example.countryapp.ui.learn
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.countryapp.ui.components.section.SectionData
 import com.example.countryapp.ui.models.Country
 import com.example.countryapp.ui.models.CountryMapper
 import com.example.countryapp.ui.quiz.selectregion.RegionQuizType

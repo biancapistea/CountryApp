@@ -5,7 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.TransformOrigin
 
-private const val AnimationDurationMillis = 600
+private const val ANIMATION_DURATION_MILLIS = 600
 
 @Stable
 class AnimatedDrawerStateImpl(
@@ -33,7 +33,7 @@ class AnimatedDrawerStateImpl(
         animation.animateTo(
             targetValue = 1f,
             animationSpec = tween(
-                durationMillis = AnimationDurationMillis,
+                durationMillis = ANIMATION_DURATION_MILLIS,
             )
         )
     }
@@ -42,7 +42,7 @@ class AnimatedDrawerStateImpl(
         animation.animateTo(
             targetValue = 0f,
             animationSpec = tween(
-                durationMillis = AnimationDurationMillis,
+                durationMillis = ANIMATION_DURATION_MILLIS,
             )
         )
     }

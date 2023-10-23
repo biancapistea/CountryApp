@@ -75,8 +75,7 @@ fun QuizScreen(
             viewModel.updateRestartQuiz()
         }
     } else if (!uiState.isLoading) {
-        ConnectivityStatus(
-            screenContent =
+        ConnectivityStatus {
             Quiz(
                 uiState = uiState,
                 onSelectedValue = viewModel::setSelectedValue,
@@ -84,7 +83,7 @@ fun QuizScreen(
                 onNextButtonClicked = viewModel::clearQuestion,
                 onExitQuizPressed = onExitQuizPressed
             )
-        )
+        }
     }
 
     if (uiState.isQuizFinalized && uiState.numberCorrectQuestions >= uiState.questions.size / 2) {

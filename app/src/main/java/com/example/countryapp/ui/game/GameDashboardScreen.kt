@@ -57,12 +57,12 @@ fun GameDashboardScreen(
         }
     }
 
-    ConnectivityStatus(
+    ConnectivityStatus {
         GameDashboardContent(
             uiState,
             onDashboardTypePressed
         )
-    )
+    }
 }
 
 @Composable

@@ -38,13 +38,13 @@ fun HomeScreen(
     onNavigateToLearnCountries: () -> Unit,
     onNavigateToPlayScreen: () -> Unit
 ) {
-    ConnectivityStatus(
+    ConnectivityStatus {
         HomeScreenContent(
             onNavigateToDashboard,
             onNavigateToLearnCountries,
             onNavigateToPlayScreen
         )
-    )
+    }
 }
 
 

@@ -36,13 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.text.ParagraphTextComponent
 import com.example.countryapp.ui.components.text.TitleText
-import com.example.countryapp.ui.learn.LearnViewModel
 import com.example.countryapp.ui.models.Country
 
 @Composable

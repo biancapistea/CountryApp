@@ -38,9 +38,9 @@ fun LearnScreen(
         }
     }
 
-    ConnectivityStatus(
+    ConnectivityStatus {
         LearnCountriesList(uiState, onCountryClick)
-    )
+    }
 }
 
 @Composable

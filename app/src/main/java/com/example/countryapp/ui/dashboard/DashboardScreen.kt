@@ -56,12 +56,12 @@ fun DashboardScreen(
         }
     }
 
-    ConnectivityStatus(
+    ConnectivityStatus {
         DashboardContent(
             uiState,
             onDashboardTypePressed
         )
-    )
+    }
 }
 
 @Composable
