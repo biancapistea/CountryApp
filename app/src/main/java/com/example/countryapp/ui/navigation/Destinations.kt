@@ -10,6 +10,8 @@ enum class Destinations {
     LearnCountries,
     CountryDetails,
     RegionType,
-    Game,
-    GameDashboard
+    HangmanGame,
+    HangmanGameDashboard,
+    GameLevels,
+    ChooseGameplay
 }

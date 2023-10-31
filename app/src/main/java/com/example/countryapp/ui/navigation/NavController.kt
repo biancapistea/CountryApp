@@ -33,8 +33,11 @@ import com.example.countryapp.ui.drawer.AnimatedDrawerState
 import com.example.countryapp.ui.drawer.DrawerParams
 import com.example.countryapp.ui.drawer.MenuOptions
 import com.example.countryapp.ui.drawer.rememberAnimatedDrawerState
-import com.example.countryapp.ui.game.GameDashboardScreen
-import com.example.countryapp.ui.game.GameScreen
+import com.example.countryapp.ui.game.choosegameplay.ChooseGameplayScreen
+import com.example.countryapp.ui.game.choosegameplay.GameplayType
+import com.example.countryapp.ui.game.dashboard.GameDashboardScreen
+import com.example.countryapp.ui.game.hangman.HangmanGame
+import com.example.countryapp.ui.game.levels.GameLevelsScreen
 import com.example.countryapp.ui.home.HomeScreen
 import com.example.countryapp.ui.learn.LearnScreen
 import com.example.countryapp.ui.learn.countrydetails.CountryDetailsScreen
@@ -82,7 +85,7 @@ fun NavController(
 
                 Surface(Modifier.noRippleClickable { scope.launch { drawerState.close() } }) {
                     if (currentRoute == Destinations.Home.name
-                        || currentRoute == Destinations.GameDashboard.name
+                        || currentRoute == Destinations.HangmanGameDashboard.name
                         || currentRoute == Destinations.Dashboard.name
                         || currentRoute == Destinations.LearnCountries.name
                     ) {
@@ -121,7 +124,7 @@ fun NavController(
                                         Destinations.LearnCountries.name
                                     )
                                 },
-                                onNavigateToPlayScreen = { navController.navigate(Destinations.GameDashboard.name) }
+                                onNavigateToPlayScreen = { navController.navigate(Destinations.HangmanGameDashboard.name) }
                             )
                         }
                         composable(Destinations.LearnCountries.name) {
@@ -164,17 +167,40 @@ fun NavController(
                                 }
                             )
                         }
-                        composable("${Destinations.Game.name}/{dashboardType}") {
-                            GameScreen(
+                        composable("${Destinations.HangmanGame.name}/{dashboardType}") {
+                            HangmanGame(
                                 gameViewModel = hiltViewModel(),
                                 onPopBack = { navController.popBackStack() }
                             )
                         }
-                        composable(Destinations.GameDashboard.name) {
-                            GameDashboardScreen(
+                        composable("${Destinations.GameLevels.name}/{dashboardType}") { backStackEntry ->
+                            val dashboardType =
+                                backStackEntry.arguments?.getString("dashboardType")
+                            GameLevelsScreen(
+                                onNavigateToHangmanGame = { navController.navigate("${Destinations.HangmanGame.name}/${dashboardType}") },
+                                onBackPressed = { navController.popBackStack() })
+                        }
+                        composable("${Destinations.ChooseGameplay.name}/{dashboardType}") { backStackEntry ->
+                            val dashboardType =
+                                backStackEntry.arguments?.getString("dashboardType")
+                            ChooseGameplayScreen(
                                 viewModel = hiltViewModel(),
                                 onDashboardTypePressed = { type ->
-                                    navController.navigate("${Destinations.Game.name}/${type.name}")
+                                    if (type == GameplayType.FREE_PLAY) {
+                                        navController.navigate("${Destinations.HangmanGame.name}/${dashboardType}")
+                                    } else {
+                                        navController.navigate("${Destinations.GameLevels.name}/${dashboardType}")
+                                    }
+                                },
+                                onBackPressed = { navController.popBackStack() }
+                            )
+                        }
+                        composable(Destinations.HangmanGameDashboard.name) {
+                            GameDashboardScreen(
+                                viewModel = hiltViewModel(),
+                                onDashboardTypePressed = { dashboardType ->
+                                    //navController.navigate("${Destinations.Game.name}/${type.name}")
+                                    navController.navigate("${Destinations.ChooseGameplay.name}/${dashboardType.name}")
                                 }
                             )
                         }

@@ -8,6 +8,7 @@
     <string name="empty"></string>
     <string name="dashboard_header_subline">Select the quiz type and answer the quiz questions to test your knowledge about the world\'s countries.</string>
     <string name="choose_type_hangman">Choose from which category you want to receive words.</string>
+    <string name="choose_gameplay_hangman">Choose what gameplay you want to play.</string>
     <string name="oh_no_text">Oh no...</string>
     <string name="region_quiz_subline">First of all, please select the continent from which you want to test your knowledge. If you would like questions from all continents, then select "all continents".</string>
     <string name="restart_quiz">Restart quiz</string>
@@ -36,4 +37,6 @@
     <string name="exit_application">Press back again to exit application</string>
     <string name="oops_no_internet_connection">Oops! No internet connection</string>
     <string name="no_internet_description">Make sure wifi or cellular data is turned on.</string>
+    <string name="free_play">Endless play</string>
+    <string name="levels">Levels</string>
 </resources>

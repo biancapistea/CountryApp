@@ -30,7 +30,7 @@ object DrawerParams {
             R.drawable.ic_training
         ),
         AppDrawerItemInfo(
-            Destinations.GameDashboard,
+            Destinations.HangmanGameDashboard,
             R.string.play_a_game_learn,
             R.drawable.ic_hangman_game
         )
