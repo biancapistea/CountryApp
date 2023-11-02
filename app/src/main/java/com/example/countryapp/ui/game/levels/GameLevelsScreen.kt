@@ -33,6 +33,7 @@ import androidx.compose.ui.zIndex
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.items.TopBackAppBar
 
+const val offSetConst = 270f
 @Composable
 fun GameLevelsScreen(onNavigateToHangmanGame: () -> Unit, onBackPressed: () -> Boolean) {
     TopBackAppBar(onPopBack = onBackPressed)
@@ -61,7 +62,6 @@ fun GameLevelsScreen(onNavigateToHangmanGame: () -> Unit, onBackPressed: () -> B
                     detectTapGestures(
                         onTap = { tapOffset ->
                             var topOffset = 70f
-                            val offsetConst = 270f
                             var bottomOffset = 170f
                             for (i in 0 until circleLimit) {
                                 val isEvenLevel = i % 2 == 0
@@ -71,8 +71,8 @@ fun GameLevelsScreen(onNavigateToHangmanGame: () -> Unit, onBackPressed: () -> B
                                     bottom = bottomOffset,
                                     right = if (isEvenLevel) 170f else size.width - 70f,
                                 )
-                                topOffset += offsetConst
-                                bottomOffset += offsetConst
+                                topOffset += offSetConst
+                                bottomOffset += offSetConst
                                 if (rect.contains(tapOffset)) {
                                     onNavigateToHangmanGame()
                                 }
@@ -82,7 +82,6 @@ fun GameLevelsScreen(onNavigateToHangmanGame: () -> Unit, onBackPressed: () -> B
                 },
                 onDraw = {
                     var yOffset = 120f
-                    val yOffsetConstant = 270f
                     for (i in 0 until circleLimit) {
                         val isEvenLevel = i % 2 == 0
                         drawCircle(
@@ -120,7 +119,7 @@ fun GameLevelsScreen(onNavigateToHangmanGame: () -> Unit, onBackPressed: () -> B
                                 moveTo(if (isEvenLevel) 220f else size.width - 220f, yOffset)
                                 lineTo(
                                     if (isEvenLevel) size.width - 220f else 220f,
-                                    yOffset + yOffsetConstant
+                                    yOffset + offSetConst
                                 )
                             }
                             drawPath(
@@ -131,7 +130,7 @@ fun GameLevelsScreen(onNavigateToHangmanGame: () -> Unit, onBackPressed: () -> B
                                     cap = StrokeCap.Round,
                                 )
                             )
-                            yOffset += yOffsetConstant
+                            yOffset += offSetConst
                         }
                     }
                 })
