@@ -1,36 +1,39 @@
 package com.example.domain.usecase
 
 import android.util.Log
+import com.example.data.network.ApiException
 import com.example.data.repository.CountryRepository
+import com.example.data.service.DispatchersProvider
 import com.example.domain.model.Country
 import com.example.domain.model.CountryNameDtoToModelMapper
+import com.example.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 interface LoadAllCountriesUseCase {
-    fun loadAllCountries(): Flow<List<Country>>
+    fun loadAllCountries(): Flow<Resource<List<Country>>>
 }
 
-internal class LoadAllCountriesUseCaseImpl @Inject constructor(private val repository: CountryRepository) :
-    LoadAllCountriesUseCase {
+internal class LoadAllCountriesUseCaseImpl @Inject constructor(
+    private val repository: CountryRepository, private val dispatchersProvider: DispatchersProvider
+) : LoadAllCountriesUseCase {
 
-    override fun loadAllCountries(): Flow<List<Country>> =
-        repository.loadAllCountries().map { countryNames ->
-            Log.d("countries returned", countryNames.toString())
-            Log.d("I'm running on (loadAllCountriesByName from usecase)", "${Thread.currentThread()}")
-            countryNames.map { CountryNameDtoToModelMapper.map(it) }
-        }.catch {
-            //emit(Result.Error(it))
-            Log.d("country name error", it.toString())
+    override fun loadAllCountries(): Flow<Resource<List<Country>>> = flow {
+        Log.d("A11:", "before calling the repo")
+        try {
+            emit(Resource.Loading())
+            Log.d("A11:", "after emitting loading")
+            val countries = repository.loadAllCountries().map { countries ->
+                CountryNameDtoToModelMapper.map(countries)
+            }
+            emit(
+                Resource.Success(countries)
+            )
+        } catch (exception: ApiException) {
+            Log.d("A11:", "before emitting the error")
+            emit(Resource.Error(exception.message ?: "An error occurred"))
         }
-
-    //TODO: handle error also
-//    =
-//    loginRepository.login(email, password, keepMeLoggedInIsChecked).map {
-//        Result.Success(loginMapper.map(it)) as Result<LoginModel>
-//    }.catch {
-//        emit(Result.Error(it))
-//    }
+    }.flowOn(dispatchersProvider.io())
 }
