@@ -9,6 +9,7 @@ import com.example.countryapp.ui.dashboard.DashboardQuizType
 import com.example.countryapp.ui.models.Quiz
 import com.example.countryapp.ui.quiz.selectregion.RegionQuizType
 import com.example.domain.model.Country
+import com.example.domain.model.Resource
 import com.example.domain.usecase.LoadAllCountriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,23 +33,41 @@ class QuizViewModel @Inject constructor(
     private val quizGeneralAspectsType: String = getRandomGeneralAspectsQuestions()
 
     init {
+        Log.d("A11:", "before viewModel launch")
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            loadAllCountriesUseCase.loadAllCountries().collectLatest { countries ->
-                Log.d("countries returned by server", countries.toString())
-                _uiState.update {
-                    it.copy(
-                        quizQuestion = getQuestionByType(dashboardType),
-                        questions = getQuizAnswersByType(
-                            dashboardType,
-                            countries,
-                            selectedRegionType
-                        ),
-                        quizHeaderImage = getHeaderImageByType(dashboardType),
-                        shouldShowImageAnswers = dashboardType == DashboardQuizType.FLAGS.name || dashboardType == DashboardQuizType.COAT_OF_ARMS.name,
-                        defaultAnswerImage = getDefaultHeaderImage(dashboardType),
-                        isLoading = false
-                    )
+            Log.d("A11:", "before calling the useCase")
+            loadAllCountriesUseCase.loadAllCountries().collectLatest { status ->
+                when (status) {
+                    is Resource.Success -> {
+                        Log.d("A11:", "success response")
+                        Log.d("countries returned by server", status.data.toString())
+                        _uiState.update {
+                            it.copy(
+                                quizQuestion = getQuestionByType(dashboardType),
+                                questions = getQuizAnswersByType(
+                                    dashboardType,
+                                    status.data ?: emptyList(),
+                                    selectedRegionType
+                                ),
+                                quizHeaderImage = getHeaderImageByType(dashboardType),
+                                shouldShowImageAnswers = dashboardType == DashboardQuizType.FLAGS.name || dashboardType == DashboardQuizType.COAT_OF_ARMS.name,
+                                defaultAnswerImage = getDefaultHeaderImage(dashboardType),
+                                isLoading = false
+                            )
+                        }
+                    }
+
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = status.message ?: "An unexpected error occured"
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -75,7 +94,7 @@ class QuizViewModel @Inject constructor(
     private fun getQuestionByType(dashboardType: String): String {
         return when (dashboardType) {
             DashboardQuizType.FLAGS.name -> {
-                "What is the flag for" //TODO: improve here to delete this mocked string
+                "What is the flag for"
             }
 
             DashboardQuizType.CAPITALS.name -> {
@@ -389,5 +408,6 @@ class QuizViewModel @Inject constructor(
         val restartQuiz: Boolean = false,
         val shouldShowImageAnswers: Boolean = false,
         val defaultAnswerImage: Int = 0,
+        val errorMessage: String = ""
     )
 }

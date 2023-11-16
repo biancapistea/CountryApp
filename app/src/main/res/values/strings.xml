@@ -14,6 +14,7 @@
     <string name="restart_quiz">Restart quiz</string>
     <string name="go_to_dashboard">Go to dashboard</string>
     <string name="exit_quiz">Exit quiz</string>
+    <string name="exit_game">Exit game</string>
     <string name="learn_and_train">Training</string>
     <string name="quiz_congratulations_message">You have passed this quiz! Keep up and complete all quizzes.</string>
     <string name="congratulations">Congratulations!</string>

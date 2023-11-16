@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.countryapp.ui.dashboard.DashboardQuizType
 import com.example.countryapp.ui.utils.StringUtil
 import com.example.domain.model.Country
+import com.example.domain.model.Resource
 import com.example.domain.usecase.LoadAllCountriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,16 +37,34 @@ class HangmanGameViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            loadAllCountriesUseCase.loadAllCountries().collectLatest { countries ->
-                _uiState.update {
-                    it.copy(
-                        countries = countries,
-                        wordRandomlyChosen = getRandomWordByType(countries, dashboardType),
-                        question = getQuestionByType(dashboardType),
-                        dashboardType = dashboardType,
-                        isLoading = false
-                    )
+            loadAllCountriesUseCase.loadAllCountries().collectLatest { status ->
+                when (status) {
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                countries = status.data ?: emptyList(),
+                                wordRandomlyChosen = getRandomWordByType(
+                                    status.data ?: emptyList(),
+                                    dashboardType
+                                ),
+                                question = getQuestionByType(dashboardType),
+                                dashboardType = dashboardType,
+                                isLoading = false
+                            )
+                        }
+                    }
+
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isLoading = true) }
+                    }
+
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = status.message ?: "An unexpected error occured"
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -72,7 +91,6 @@ class HangmanGameViewModel @Inject constructor(
             }
         }
     }
-
 
 
     private fun getRandomWordByType(
@@ -352,7 +370,8 @@ class HangmanGameViewModel @Inject constructor(
         val livesLeft: Int = 6,
         val isGameOver: Boolean = false,
         val streakCount: Int = 0,
-        val dashboardType: String = ""
+        val dashboardType: String = "",
+        val errorMessage: String = ""
     )
 }
 

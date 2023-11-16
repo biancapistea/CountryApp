@@ -37,6 +37,7 @@ import com.example.countryapp.ui.game.choosegameplay.ChooseGameplayScreen
 import com.example.countryapp.ui.game.choosegameplay.GameplayType
 import com.example.countryapp.ui.game.dashboard.GameDashboardScreen
 import com.example.countryapp.ui.game.hangman.HangmanGame
+import com.example.countryapp.ui.game.hangman.HangmanWithLevelsScreen
 import com.example.countryapp.ui.game.levels.GameLevelsScreen
 import com.example.countryapp.ui.home.HomeScreen
 import com.example.countryapp.ui.learn.LearnScreen
@@ -173,13 +174,22 @@ fun NavController(
                                 onPopBack = { navController.popBackStack() }
                             )
                         }
-                        composable("${Destinations.GameLevels.name}/{dashboardType}") { backStackEntry ->
+                        composable("${Destinations.GameLevelsOverview.name}/{dashboardType}") { backStackEntry ->
                             val dashboardType =
                                 backStackEntry.arguments?.getString("dashboardType")
                             GameLevelsScreen(
-                                onNavigateToHangmanGame = { navController.navigate("${Destinations.HangmanGame.name}/${dashboardType}") },
+                                onNavigateToHangmanGame = { currentLevel ->
+                                    navController.navigate("${Destinations.HangmanWithLevelsGame.name}/${dashboardType}/${currentLevel}")
+                                },
                                 onBackPressed = { navController.popBackStack() })
                         }
+
+                        composable("${Destinations.HangmanWithLevelsGame.name}/{dashboardType}/{currentLevel}") { backStackEntry->
+                            HangmanWithLevelsScreen(
+                                viewModel = hiltViewModel(),
+                                onExitPressed = { navController.popBackStack() })
+                        }
+
                         composable("${Destinations.ChooseGameplay.name}/{dashboardType}") { backStackEntry ->
                             val dashboardType =
                                 backStackEntry.arguments?.getString("dashboardType")
@@ -189,7 +199,7 @@ fun NavController(
                                     if (type == GameplayType.FREE_PLAY) {
                                         navController.navigate("${Destinations.HangmanGame.name}/${dashboardType}")
                                     } else {
-                                        navController.navigate("${Destinations.GameLevels.name}/${dashboardType}")
+                                        navController.navigate("${Destinations.GameLevelsOverview.name}/${dashboardType}")
                                     }
                                 },
                                 onBackPressed = { navController.popBackStack() }

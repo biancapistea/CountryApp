@@ -35,7 +35,7 @@ import com.example.countryapp.ui.components.items.TopBackAppBar
 
 const val offSetConst = 270f
 @Composable
-fun GameLevelsScreen(onNavigateToHangmanGame: () -> Unit, onBackPressed: () -> Boolean) {
+fun GameLevelsScreen(onNavigateToHangmanGame: (Int) -> Unit, onBackPressed: () -> Boolean) {
     TopBackAppBar(onPopBack = onBackPressed)
     Column(
         modifier = Modifier
@@ -74,7 +74,7 @@ fun GameLevelsScreen(onNavigateToHangmanGame: () -> Unit, onBackPressed: () -> B
                                 topOffset += offSetConst
                                 bottomOffset += offSetConst
                                 if (rect.contains(tapOffset)) {
-                                    onNavigateToHangmanGame()
+                                    onNavigateToHangmanGame(i)
                                 }
                             }
                         }

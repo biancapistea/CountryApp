@@ -130,7 +130,7 @@ private fun GameContent(
 }
 
 @Composable
-private fun ChosenWordRow(
+fun ChosenWordRow(
     wordChosen: String?,
     correctLetters: Set<Char>,
 ) {
@@ -221,7 +221,7 @@ fun TipAndCountText(tip: String, winCount: Int) {
 }
 
 @Composable
-private fun KeyboardLayout(
+fun KeyboardLayout(
     checkUserGuess: (Char) -> Unit,
     alphabetList: List<Char>,
     correctLetters: Set<Char>,
