@@ -27,7 +27,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -37,12 +36,10 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.loading.IndeterminateCircularIndicator
 import com.example.countryapp.ui.components.text.ParagraphTextComponent
@@ -59,14 +56,7 @@ fun QuizScreen(
     onNavigateToSuccessResultQuizDialog: () -> Unit = {},
     onNavigateToIncorrectQuizResultDialog: () -> Unit = {}
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = QuizViewModel.UiState()
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect { value = it }
-        }
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     IndeterminateCircularIndicator(uiState.isLoading)
 

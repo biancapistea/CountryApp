@@ -17,12 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -31,8 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.customgriditems.gridItems
 import com.example.countryapp.ui.components.items.DashboardItem
@@ -47,16 +44,7 @@ fun GameDashboardScreen(
     viewModel: HangmanGameDashboardViewModel,
     onDashboardTypePressed: (DashboardQuizType) -> Unit = {}
 ) {
-
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = HangmanGameDashboardViewModel.UiState()
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect { value = it }
-        }
-    }
-
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ConnectivityStatus {
         GameDashboardContent(
             uiState,

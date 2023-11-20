@@ -22,13 +22,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -37,8 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.buttons.BlueButtonComponent
 import com.example.countryapp.ui.components.text.ParagraphTextComponent
@@ -51,14 +48,7 @@ fun IncorrectQuizResultDialog(
     quizViewModel: QuizViewModel,
     onDismissDialog: () -> Unit = {}
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = QuizViewModel.UiState()
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            quizViewModel.uiState.collect { value = it }
-        }
-    }
+    val uiState by quizViewModel.uiState.collectAsStateWithLifecycle()
 
     Dialog(properties = DialogProperties(usePlatformDefaultWidth = false), onDismissRequest = {}) {
         Surface(

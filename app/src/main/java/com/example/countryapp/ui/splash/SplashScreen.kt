@@ -11,26 +11,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.countryapp.R
 
 @Composable
 fun SplashScreen(onNavigateToDashboard: () -> Unit = {}, viewModel: SplashViewModel) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val isLoading by produceState(
-        initialValue = true
-    ) {
-        lifecycle.repeatOnLifecycle(state = androidx.lifecycle.Lifecycle.State.STARTED) {
-            viewModel.isLoading.collect { value = it }
-        }
-    }
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
     if (isLoading) {
         SplashScreenContent()

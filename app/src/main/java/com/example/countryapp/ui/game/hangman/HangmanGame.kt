@@ -21,20 +21,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.animation.AnimatedText
@@ -51,14 +48,7 @@ fun HangmanGame(
     gameViewModel: HangmanGameViewModel,
     onPopBack: () -> Boolean
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = HangmanGameViewModel.GameUiState()
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            gameViewModel.uiState.collect { value = it }
-        }
-    }
+    val uiState by gameViewModel.uiState.collectAsStateWithLifecycle()
 
     if (gameViewModel.isWordCorrectlyGuessed()) {
         gameViewModel.resetStates()

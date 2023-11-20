@@ -8,14 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.section.ExpandableList
 import com.example.countryapp.ui.components.section.SectionData
@@ -29,15 +26,7 @@ fun LearnScreen(
     viewModel: LearnViewModel,
     onCountryClick: (Country) -> Unit
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = LearnViewModel.UiState()
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect { value = it }
-        }
-    }
-
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ConnectivityStatus {
         LearnCountriesList(uiState, onCountryClick)
     }
