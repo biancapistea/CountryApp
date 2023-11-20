@@ -7,8 +7,11 @@ import com.example.countryapp.ui.dashboard.DashboardQuizType
 import com.example.countryapp.ui.utils.StringUtil
 import com.example.domain.model.Country
 import com.example.domain.model.Resource
+import com.example.domain.model.WordStatus
+import com.example.domain.usecase.GetCurrentWordStatusUseCase
 import com.example.domain.usecase.GetQuestionStatusUseCase
 import com.example.domain.usecase.LoadAllCountriesUseCase
+import com.example.domain.usecase.SaveCurrentWordStatusUseCase
 import com.example.domain.usecase.SaveQuestionStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,17 +26,15 @@ import javax.inject.Inject
 class HangmanWithLevelsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     loadAllCountriesUseCase: LoadAllCountriesUseCase,
-    saveQuestionStatusUseCase: SaveQuestionStatusUseCase,
-    getQuestionStatusUseCase: GetQuestionStatusUseCase
+    private val saveQuestionStatusUseCase: SaveQuestionStatusUseCase,
+    private val getQuestionStatusUseCase: GetQuestionStatusUseCase,
+    private val getCurrentWordStatusUseCase: GetCurrentWordStatusUseCase,
+    private val saveCurrentWordStatusUseCase: SaveCurrentWordStatusUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
     private val dashboardType: String = checkNotNull(savedStateHandle["dashboardType"])
     private val currentLevel: String = checkNotNull(savedStateHandle["currentLevel"])
-    private var lettersGuessed: MutableSet<Char> = mutableSetOf()
-    private var correctLetters: MutableSet<Char> = mutableSetOf()
-    private var wrongLetters: MutableSet<Char> = mutableSetOf()
-    private var _currentLetterGuessed: Char = ' '
 
     init {
         viewModelScope.launch {
@@ -42,6 +43,7 @@ class HangmanWithLevelsViewModel @Inject constructor(
                     is Resource.Success -> {
                         val formattedCountries =
                             getQuestionsByLevel(currentLevel.toInt(), status.data ?: emptyList())
+                        val wordStatus = getCurrentWordState(formattedCountries[0].name.common)
                         _uiState.update {
                             it.copy(
                                 countries = formattedCountries,
@@ -52,7 +54,10 @@ class HangmanWithLevelsViewModel @Inject constructor(
                                 countryFlag = getCountryFlag(formattedCountries[0]),
                                 question = getQuestionByType(formattedCountries[0]),
                                 currentLevel = currentLevel.toInt(),
-                                currentIndexOfQuestion = 0
+                                currentIndexOfQuestion = 0,
+                                usedLetters = wordStatus.usedLetters,
+                                correctLetters = wordStatus.correctLetters,
+                                wrongLetters = wordStatus.wrongLetters,
                             )
                         }
                     }
@@ -73,6 +78,33 @@ class HangmanWithLevelsViewModel @Inject constructor(
         }
     }
 
+    private fun saveCurrentWordState() {
+        val countryName = _uiState.value.countries[_uiState.value.currentIndexOfQuestion].name.common
+
+        saveCurrentWordStatusUseCase.saveCurrentStatusUseCase(
+            WordStatus(
+                correctLetters = _uiState.value.correctLetters,
+                usedLetters = _uiState.value.usedLetters,
+                wrongLetters = _uiState.value.wrongLetters
+            ),
+            countryName
+        )
+    }
+
+    private fun getCurrentWordState(countryName: String): WordStatus =
+        getCurrentWordStatusUseCase.getCurrentWordStatusUseCase(countryName)
+
+    private fun saveQuestionStatus(status: QuestionStatus) {
+        saveQuestionStatusUseCase.saveQuestionStatus(
+            status.name,
+            _uiState.value.countries[_uiState.value.currentIndexOfQuestion].name.common
+        )
+    }
+
+    private fun getQuestionStatus(): String {
+        return getQuestionStatusUseCase.getQuestionStatus(_uiState.value.countries[_uiState.value.currentIndexOfQuestion].name.common)
+    }
+
     private fun getCountryFlag(country: Country): String =
         country.flags?.png ?: ""
 
@@ -82,14 +114,18 @@ class HangmanWithLevelsViewModel @Inject constructor(
     ): String {
         return when (dashboardType) {
             DashboardQuizType.CAPITALS.name -> {
-                val countriesWithCapitals = countries.filter { it.capital?.isNotEmpty() == true }
-                val currentIndex = currentIndexOfQuestion ?: _uiState.value.currentIndexOfQuestion
+                val countriesWithCapitals =
+                    countries.filter { it.capital?.isNotEmpty() == true }
+                val currentIndex =
+                    currentIndexOfQuestion ?: _uiState.value.currentIndexOfQuestion
                 countriesWithCapitals[currentIndex].capital?.firstOrNull()?.uppercase() ?: ""
             }
 
             DashboardQuizType.FLAGS.name -> {
-                val countriesWithFlags = countries.filter { it.flags?.png?.isNotEmpty() == true }
-                val currentIndex = currentIndexOfQuestion ?: _uiState.value.currentIndexOfQuestion
+                val countriesWithFlags =
+                    countries.filter { it.flags?.png?.isNotEmpty() == true }
+                val currentIndex =
+                    currentIndexOfQuestion ?: _uiState.value.currentIndexOfQuestion
                 countriesWithFlags[currentIndex].name.common.uppercase()
             }
 
@@ -142,19 +178,19 @@ class HangmanWithLevelsViewModel @Inject constructor(
         }
     }
 
-    private fun getQuestionsByLevel(currentLevel: Int, countries: List<Country>): List<Country> {
+    private fun getQuestionsByLevel(
+        currentLevel: Int,
+        countries: List<Country>
+    ): List<Country> {
         return countries.slice(currentLevel * 10..currentLevel * 10 + 9)
     }
 
     fun goToTheNextQuestion() {
-        lettersGuessed.clear()
-        correctLetters.clear()
-        wrongLetters.clear()
-        _currentLetterGuessed = ' '
-
+        saveCurrentWordState()
         if (_uiState.value.currentIndexOfQuestion < _uiState.value.countries.size - 1) {
             val nextIndexOfQuestion = _uiState.value.currentIndexOfQuestion + 1
             val nextCountry = _uiState.value.countries[nextIndexOfQuestion]
+            val wordStatus = getCurrentWordState(nextCountry.name.common)
             _uiState.update {
                 it.copy(
                     currentIndexOfQuestion = nextIndexOfQuestion,
@@ -164,34 +200,34 @@ class HangmanWithLevelsViewModel @Inject constructor(
                         nextIndexOfQuestion,
                     ),
                     question = getQuestionByType(nextCountry),
-                    usedLetters = emptySet(),
-                    correctLetters = emptySet(),
-                    wrongLetters = emptySet(),
+                    usedLetters = wordStatus.usedLetters,
+                    correctLetters = wordStatus.correctLetters,
+                    wrongLetters = wordStatus.wrongLetters,
                 )
             }
         } else {
+            val lastCountry = _uiState.value.countries[0]
+            val wordStatus = getCurrentWordState(lastCountry.name.common)
             _uiState.update {
                 it.copy(
                     currentIndexOfQuestion = 0,
                     correctAnswer = getCorrectAnswer(_uiState.value.countries, 0),
                     countryFlag = getCountryFlag(_uiState.value.countries[0]),
                     question = getQuestionByType(_uiState.value.countries[0]),
-                    usedLetters = emptySet(),
-                    correctLetters = emptySet(),
-                    wrongLetters = emptySet(),
+                    usedLetters = wordStatus.usedLetters,
+                    correctLetters = wordStatus.correctLetters,
+                    wrongLetters = wordStatus.wrongLetters,
                 )
             }
         }
     }
 
     fun goToPreviousQuestion() {
-        lettersGuessed.clear()
-        correctLetters.clear()
-        wrongLetters.clear()
-        _currentLetterGuessed = ' '
+        saveCurrentWordState()
         if (_uiState.value.currentIndexOfQuestion > 0) {
             val previousIndexOfQuestion = _uiState.value.currentIndexOfQuestion - 1
             val previousCountry = _uiState.value.countries[previousIndexOfQuestion]
+            val wordStatus = getCurrentWordState(previousCountry.name.common)
             _uiState.update {
                 it.copy(
                     currentIndexOfQuestion = previousIndexOfQuestion,
@@ -201,12 +237,14 @@ class HangmanWithLevelsViewModel @Inject constructor(
                         previousIndexOfQuestion
                     ),
                     question = getQuestionByType(previousCountry),
-                    usedLetters = emptySet(),
-                    correctLetters = emptySet(),
-                    wrongLetters = emptySet(),
+                    usedLetters = wordStatus.usedLetters,
+                    correctLetters = wordStatus.correctLetters,
+                    wrongLetters = wordStatus.wrongLetters,
                 )
             }
         } else {
+            val lastCountry = _uiState.value.countries[_uiState.value.countries.lastIndex]
+            val wordStatus = getCurrentWordState(lastCountry.name.common)
             _uiState.update {
                 it.copy(
                     currentIndexOfQuestion = _uiState.value.countries.lastIndex,
@@ -214,11 +252,11 @@ class HangmanWithLevelsViewModel @Inject constructor(
                         _uiState.value.countries,
                         _uiState.value.countries.lastIndex
                     ),
-                    countryFlag = getCountryFlag(_uiState.value.countries[_uiState.value.countries.lastIndex]),
-                    question = getQuestionByType(_uiState.value.countries[_uiState.value.countries.lastIndex]),
-                    usedLetters = emptySet(),
-                    correctLetters = emptySet(),
-                    wrongLetters = emptySet(),
+                    countryFlag = getCountryFlag(lastCountry),
+                    question = getQuestionByType(lastCountry),
+                    usedLetters = wordStatus.usedLetters,
+                    correctLetters = wordStatus.correctLetters,
+                    wrongLetters = wordStatus.wrongLetters,
                 )
             }
         }
@@ -229,18 +267,33 @@ class HangmanWithLevelsViewModel @Inject constructor(
             _uiState.value.correctAnswer?.run {
                 val wordWithoutWhitespaces =
                     StringUtil.removeWhitespacesAndHyphens(this).uppercase()
-                val normalizedWord = StringUtil.normalizeWord(wordWithoutWhitespaces).uppercase()
+                val normalizedWord =
+                    StringUtil.normalizeWord(wordWithoutWhitespaces).uppercase()
                 _uiState.value.correctLetters.containsAll(normalizedWord.toList())
             } == true
-        } else false
+        } else {
+            false
+        }
+    }
+
+    fun resetStates() {}
+
+    fun saveCurrentQuestionStatus() {
+        if (isWordCorrectlyGuessed()) {
+            saveQuestionStatus(QuestionStatus.COMPLETED)
+        } else {
+            saveQuestionStatus(QuestionStatus.WRONG)
+        }
     }
 
     fun checkUserGuess(letterFromButton: Char) {
+        val lettersGuessed = _uiState.value.usedLetters.toMutableSet()
         lettersGuessed.add(letterFromButton)
-        _currentLetterGuessed = letterFromButton.uppercaseChar()
+        val currentLetterGuessed = letterFromButton.uppercaseChar()
 
         if (isLetterGuessCorrect(letterFromButton) == true) {
-            correctLetters.add(_currentLetterGuessed)
+            val correctLetters = _uiState.value.correctLetters.toMutableSet()
+            correctLetters.add(currentLetterGuessed)
             _uiState.update { currentState ->
                 currentState.copy(
                     usedLetters = lettersGuessed.toSet(),
@@ -248,8 +301,8 @@ class HangmanWithLevelsViewModel @Inject constructor(
                 )
             }
         } else {
-            wrongLetters.add(_currentLetterGuessed)
-
+            val wrongLetters = _uiState.value.wrongLetters.toMutableSet()
+            wrongLetters.add(currentLetterGuessed)
             _uiState.update { currentState ->
                 currentState.copy(
                     usedLetters = lettersGuessed.toSet(),
@@ -274,6 +327,7 @@ class HangmanWithLevelsViewModel @Inject constructor(
         val wrongLetters: Set<Char> = emptySet(),
         val isLoading: Boolean = false,
         val currentLevel: Int = 0,
-        val errorMessage: String = ""
+        val errorMessage: String = "",
+        val status: String = QuestionStatus.WRONG.name
     )
 }

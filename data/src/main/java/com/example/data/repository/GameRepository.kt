@@ -5,53 +5,39 @@ import com.example.data.network.ApiException
 import com.example.data.preferences.GamificationPersistenceStore
 import com.example.data.util.GamificationKey.QUESTION_STATUS_KEY
 import com.example.data.util.GamificationKey.WORD_STATUS_KEY
-import com.example.data.util.Resource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
 interface GameRepository {
-    fun saveQuestionStatus(status: String)
-    fun getQuestionStatus(): Flow<Resource<String>?>
-    fun saveCurrentStatusOfWord(statusQuestion: WordStatusDto)
-    fun getCurrentStatusOfWord(): Flow<Resource<WordStatusDto>?>
+    fun saveQuestionStatus(status: String, countryName: String)
+    fun getQuestionStatus(countryName: String): String
+    fun saveCurrentStatusOfWord(statusQuestion: WordStatusDto, countryName: String)
+    fun getCurrentStatusOfWord(countryName: String): WordStatusDto
 }
 
 internal class GameRepositoryImpl @Inject constructor(private val gamificationPersistenceStore: GamificationPersistenceStore) :
     GameRepository {
-    override fun saveQuestionStatus(status: String) {
-        gamificationPersistenceStore.saveQuestionStatus(QUESTION_STATUS_KEY, status)
+    override fun saveQuestionStatus(status: String, countryName: String) {
+        gamificationPersistenceStore.saveQuestionStatus("${QUESTION_STATUS_KEY}_${countryName.replace("\\s".toRegex(), "")}", status)
     }
 
-    override fun getQuestionStatus(): Flow<Resource<String>> = flow {
-        try {
-            emit(Resource.Loading())
-            val questionStatus = gamificationPersistenceStore.getQuestionStatus(QUESTION_STATUS_KEY)
-            emit(
-                Resource.Success(questionStatus ?: "Not found")
-            )
+    override fun getQuestionStatus(countryName: String): String {
+       return try {
+           gamificationPersistenceStore.getQuestionStatus("${QUESTION_STATUS_KEY}_${countryName.replace("\\s".toRegex(), "")}")
         } catch (e: ApiException) {
-            emit(Resource.Error("Not found"))
+           throw ApiException(message = "Not found")
         }
     }
 
-    override fun saveCurrentStatusOfWord(statusQuestion: WordStatusDto) {
-        gamificationPersistenceStore.saveCurrentStatusOfWord(WORD_STATUS_KEY, statusQuestion)
+    override fun saveCurrentStatusOfWord(statusQuestion: WordStatusDto, countryName: String) {
+        gamificationPersistenceStore.saveCurrentStatusOfWord("${WORD_STATUS_KEY}_${countryName.replace("\\s".toRegex(), "")}", statusQuestion)
     }
 
-    override fun getCurrentStatusOfWord(): Flow<Resource<WordStatusDto>> = flow {
-        try {
-            emit(Resource.Loading())
-            val currentStatusWord =
-                gamificationPersistenceStore.getCurrentStatusOfWord(WORD_STATUS_KEY)
-            emit(
-                Resource.Success(currentStatusWord ?: throw ApiException(message = "Not found"))
-            )
+    override fun getCurrentStatusOfWord(countryName: String): WordStatusDto {
+       return try {
+           gamificationPersistenceStore.getCurrentStatusOfWord("${WORD_STATUS_KEY}_${countryName.replace("\\s".toRegex(), "")}")
         } catch (e: IOException) {
-            emit(Resource.Error("Couldn't reach server. Check your internet connection."))
-        } catch (e: ApiException) {
-            emit(Resource.Error("Not found"))
+            throw ApiException (message =  "Couldn't reach server. Check your internet connection.")
         }
     }
 }

@@ -14,19 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.countryapp.R
 import com.example.countryapp.ui.components.animation.HeartAnimation
@@ -38,15 +36,22 @@ fun HangmanWithLevelsScreen(
     viewModel: HangmanWithLevelsViewModel,
     onExitPressed: () -> Unit
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = HangmanWithLevelsViewModel.UiState()
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect { value = it }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        if (viewModel.isWordCorrectlyGuessed()) {
+//            viewModel.resetStates()
+            viewModel.saveCurrentQuestionStatus()
         }
     }
-    HangmanContent(uiState = uiState, onExitPressed, checkUserGuess = viewModel::checkUserGuess, onGoToTheNextQuestion = viewModel::goToTheNextQuestion, onGoToPreviousQuestion = viewModel::goToPreviousQuestion)
+
+    HangmanContent(
+        uiState = uiState,
+        onExitPressed,
+        checkUserGuess = viewModel::checkUserGuess,
+        onGoToTheNextQuestion = viewModel::goToTheNextQuestion,
+        onGoToPreviousQuestion = viewModel::goToPreviousQuestion
+    )
 }
 
 @Composable
@@ -56,7 +61,7 @@ fun HangmanContent(
     checkUserGuess: (Char) -> Unit,
     onGoToTheNextQuestion: () -> Unit,
     onGoToPreviousQuestion: () -> Unit,
-    ) {
+) {
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -67,15 +72,24 @@ fun HangmanContent(
     ) {
         TitleText(text = uiState.question, modifier = Modifier.padding(12.dp))
         Row {
-            Image(painterResource(id = R.drawable.ic_arrow_left), contentDescription = "go to previous question", modifier = Modifier.size(42.dp).clickable { onGoToPreviousQuestion() })
+            Image(painterResource(id = R.drawable.ic_arrow_left),
+                contentDescription = "go to previous question",
+                modifier = Modifier
+                    .size(42.dp)
+                    .clickable { onGoToPreviousQuestion() })
             AsyncImage(
                 modifier = Modifier
-                    .size(120.dp).weight(1.0f),
+                    .size(120.dp)
+                    .weight(1.0f),
                 contentScale = ContentScale.Fit,
                 model = uiState.countryFlag,
                 contentDescription = null
             )
-            Image(painterResource(id = R.drawable.ic_arrow_right), contentDescription = "go to next question", modifier = Modifier.size(42.dp).clickable { onGoToTheNextQuestion() })
+            Image(painterResource(id = R.drawable.ic_arrow_right),
+                contentDescription = "go to next question",
+                modifier = Modifier
+                    .size(42.dp)
+                    .clickable { onGoToTheNextQuestion() })
         }
         HeartAnimation(
             uiState.livesLeft
