@@ -56,10 +56,10 @@ fun HangmanGame(
 
     if (gameViewModel.isGameOver()) {
         GameOverDialog(
-            resetGame = { gameViewModel.resetStates() },
+            resetGame = gameViewModel::resetStates,
             wordChosen = uiState.wordRandomlyChosen,
             hitsCount = uiState.streakCount,
-            exitGame = { onPopBack() }
+            exitGame = onPopBack
         )
     }
     IndeterminateCircularIndicator(uiState.isLoading)
@@ -67,8 +67,8 @@ fun HangmanGame(
         GameContent(
             onPopBack = onPopBack,
             uiState = uiState,
-            checkUserGuess = { gameViewModel.checkUserGuess(it) },
-            onSkipPressed = { gameViewModel.onSkipPressed() }
+            checkUserGuess = gameViewModel::checkUserGuess ,
+            onSkipPressed = gameViewModel::onSkipPressed
         )
     }
 }
