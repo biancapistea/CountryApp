@@ -18,3 +18,5 @@ The app is meant to test and improve your knowledge about the countries of the w
 <img width="408" alt="Screenshot 2023-09-15 at 10 20 39" src="https://github.com/biancapistea/CountryApp/assets/56589178/d5f9d99f-7d35-42b0-b3a2-22f472492109">
 <img width="311" alt="Screenshot 2023-11-14 at 10 40 45" src="https://github.com/biancapistea/CountryApp/assets/56589178/54b07a37-6669-4e1a-8744-1a889ed51ee8">
 <img width="311" alt="Screenshot 2023-11-14 at 10 40 49" src="https://github.com/biancapistea/CountryApp/assets/56589178/a0e3105a-65c4-49a9-baeb-4d35ddfc1818">
+<img width="392" alt="Screenshot 2024-03-22 at 14 26 29" src="https://github.com/biancapistea/CountryApp/assets/56589178/b89ebb3b-7717-4cf1-84b4-2045387489b5">
+<img width="392" alt="Screenshot 2024-03-22 at 14 26 33" src="https://github.com/biancapistea/CountryApp/assets/56589178/70c3e388-4c95-4073-9a98-3aa3d0e0308e">
