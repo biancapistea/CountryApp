@@ -5,3 +5,5 @@ GeoQuiz: The app is meant to test and improve your knowledge about the countries
 - I thought about new features
 - I developed the required features
 - I used the newest Android technologies (Jetpack Compose, Flows, Compose Navigation)
+
+**Tech Stack: Kotlin, Jetpack Compose, Retrofit, Dagger Hilt, Navigation, Flows, Coroutines**
